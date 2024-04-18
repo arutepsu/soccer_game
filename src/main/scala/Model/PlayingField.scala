@@ -2,6 +2,8 @@ package Model
 
 import scala.collection.mutable.Queue
 import scala.util.Random
+import CardObject._
+import Suit._
 
 class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
   private var player1Hand: Queue[Card] = Queue.empty
@@ -10,17 +12,7 @@ class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
   private var player2Field: Queue[Card] = Queue.empty
 
   // Initialize players' hands and fields
-  private def initialize(): Unit = {
-    player1Hand = drawCards(player1Cards, 4)
-    player2Hand = drawCards(player2Cards, 4)
-  }
 
-  // Draw cards from the given queue
-  private def drawCards(cards: Queue[Card], count: Int): Queue[Card] = {
-    cards.dequeueAll(_ => true).take(count)
-  }
-
-  // Display players' hands and fields
   def display(): Unit = {
     println("Player 1's hand:")
     player1Hand.foreach(println)
@@ -31,10 +23,8 @@ class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
     println("\nPlayer 2's field:")
     player2Field.foreach(println)
   }
-
   // Play the game
   def playGame(): Unit = {
-    initialize()
     display()
 
     // Player 1 attacks Player 2 with a card from their hand
@@ -51,20 +41,5 @@ class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
 object PlayingField {
   def main(args: Array[String]): Unit = {
     // Sample queues of cards for players
-    val player1Cards = Queue(
-      Card("Ace", Suit.Hearts), Card("2", Suit.Hearts), Card("3", Suit.Hearts), Card("4", Suit.Hearts),
-      Card("5", Suit.Hearts), Card("6", Suit.Hearts), Card("7", Suit.Hearts), Card("8", Suit.Hearts),
-      Card("9", Suit.Hearts), Card("10", Suit.Hearts), Card("Jack", Suit.Hearts), Card("Queen", Suit.Hearts),
-      Card("King", Suit.Hearts)
-    )
-    val player2Cards = Queue(
-      Card("Ace", Suit.Clubs), Card("2", Suit.Clubs), Card("3", Suit.Clubs), Card("4", Suit.Clubs),
-      Card("5", Suit.Clubs), Card("6", Suit.Clubs), Card("7", Suit.Clubs), Card("8", Suit.Clubs),
-      Card("9", Suit.Clubs), Card("10", Suit.Clubs), Card("Jack", Suit.Clubs), Card("Queen", Suit.Clubs),
-      Card("King", Suit.Clubs)
-    )
-
-    val playingField = new PlayingField(player1Cards, player2Cards)
-    playingField.playGame()
   }
 }
