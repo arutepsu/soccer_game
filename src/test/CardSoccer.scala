@@ -21,7 +21,7 @@ class CardSoccer extends AnyWordSpec {
       }
     }
 
-    "during gameplay" should {
+    "during gameplay : " should {
 
       "handle a debate when attacker's card is the same as defender's card" in {
         val game = new CardSoccer()
