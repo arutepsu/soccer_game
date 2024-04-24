@@ -28,7 +28,6 @@ object CardDeck {
     shuffledBuffer.foreach(deck.enqueue)
   }
 
-
   def main(args: Array[String]): Unit = {
     val deck = createStandardDeck()
     println("Standard Deck of Cards:")
