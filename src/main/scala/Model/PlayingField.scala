@@ -32,13 +32,10 @@ class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
   }
 
   def fieldPrepare(playerHand: mutable.Queue[Card], playerField: ListBuffer[Card]) : Unit = {
-    for (_ <- 1 to 4) { // Assuming each player gets 5 cards initially
+    for (_ <- 1 to 4) { //  each player gets 5 cards initially
       val card = playerHand.dequeue()
       playerField += card
       playerHand.drop(1)
-    }
-    for (element <- playerField) {
-
     }
   }
   def display(): Unit = {
@@ -58,8 +55,8 @@ class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
 object PlayingField {
   def main(args: Array[String]): Unit = {
 
-    val player1Cards = Queue.empty[Card]
-    val player2Cards = Queue.empty[Card]
+    val player1Cards = mutable.Queue.empty[Card]
+    val player2Cards = mutable.Queue.empty[Card]
 
     val playingField = new PlayingField(player1Cards, player2Cards)
     playingField.gamePrepare()
