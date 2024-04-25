@@ -1,6 +1,44 @@
 package Model
 
 import scala.collection.mutable.Queue
+huybranch
+import scala.collection.mutable.ListBuffer
+import scala.util.Random
+import CardObject._
+import Suit._
+import CardDeck._
+import CardValueOrdering._
+
+import scala.collection.mutable
+
+class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
+  private val player1Hand: mutable.Queue[Card] = mutable.Queue.empty
+  private val player2Hand: Queue[Card] = Queue.empty
+  private val player1Field: ListBuffer[Card] = ListBuffer.empty
+  private val player2Field: ListBuffer[Card] = ListBuffer.empty
+
+  def gamePrepare() : Unit = {
+    val deck = CardDeck.createStandardDeck()
+    CardDeck.shuffleDeck(deck)
+    // Distribute cards to player 1
+    for (_ <- 1 to 26) { // Assuming each player gets 5 cards initially
+      val card = deck.dequeue()
+      player1Hand.enqueue(card)
+    }
+    // Distribute cards to player 2
+    for (_ <- 1 to 26) {
+      val card = deck.dequeue()
+      player2Hand.enqueue(card)
+    }
+  }
+
+  def fieldPrepare(playerHand: mutable.Queue[Card], playerField: ListBuffer[Card]) : Unit = {
+    for (_ <- 1 to 4) { //  each player gets 5 cards initially
+      val card = playerHand.dequeue()
+      playerField += card
+      playerHand.drop(1)
+    }
+  }
 import scala.util.Random
 
 class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
@@ -21,6 +59,7 @@ class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
   }
 
   // Display players' hands and fields
+branch-master
   def display(): Unit = {
     println("Player 1's hand:")
     player1Hand.foreach(println)
@@ -31,6 +70,24 @@ class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
     println("\nPlayer 2's field:")
     player2Field.foreach(println)
   }
+huybranch
+  // Play the game
+  def playGame(): Unit = {
+  }
+}
+object PlayingField {
+  def main(args: Array[String]): Unit = {
+
+    val player1Cards = mutable.Queue.empty[Card]
+    val player2Cards = mutable.Queue.empty[Card]
+
+    val playingField = new PlayingField(player1Cards, player2Cards)
+    playingField.gamePrepare()
+    playingField.fieldPrepare(playingField.player1Hand,playingField.player1Field)
+    playingField.fieldPrepare(playingField.player2Hand,playingField.player2Field)
+
+    playingField.display()
+
 
   // Play the game
   def playGame(): Unit = {
@@ -66,5 +123,6 @@ object PlayingField {
 
     val playingField = new PlayingField(player1Cards, player2Cards)
     playingField.playGame()
+    branch-master
   }
 }

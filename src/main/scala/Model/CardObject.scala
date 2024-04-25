@@ -15,4 +15,8 @@ object CardObject {
   case object Jack extends CardValue
   case object Queen extends CardValue
   case object King extends CardValue
+huybranch
+
+
+branch-master
 }
