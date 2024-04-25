@@ -15,7 +15,6 @@ class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
   private val player2Hand: Queue[Card] = Queue.empty
   private val player1Field: ListBuffer[Card] = ListBuffer.empty
   private val player2Field: ListBuffer[Card] = ListBuffer.empty
-
   def gamePrepare() : Unit = {
     val deck = CardDeck.createStandardDeck()
     CardDeck.shuffleDeck(deck)
@@ -30,6 +29,10 @@ class PlayingField(player1Cards: Queue[Card], player2Cards: Queue[Card]) {
       player2Hand.enqueue(card)
     }
   }
+
+  def getPlayer1Hand: mutable.Queue[Card] = player1Hand
+
+  def getPlayer2Hand: mutable.Queue[Card] = player2Hand
 
   def fieldPrepare(playerHand: mutable.Queue[Card], playerField: ListBuffer[Card]) : Unit = {
     for (_ <- 1 to 4) { //  each player gets 5 cards initially
