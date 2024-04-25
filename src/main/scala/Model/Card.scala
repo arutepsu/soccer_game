@@ -1,6 +1,6 @@
 package Model
 
-import Model.CardObject._
+import Model.CardValue._
 import Model.Suit.Suit
 
 case class Card(value: CardValue, suit: Suit) {
