@@ -1,2 +1,5 @@
-package Liar.Model
-class Player(var nickname :String, var cards: List[String]) {}
+package Model
+
+case class Player(nickname: String, cards: List[String]) {
+  override def toString: String = s"Player: $nickname, Cards: ${cards.mkString(", ")}"
+}

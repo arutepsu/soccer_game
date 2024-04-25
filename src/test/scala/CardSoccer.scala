@@ -1,7 +1,6 @@
-import org.scalatest.wordspec.AnyWordSpec
+import Model.Card
 import org.scalatest.matchers.should.Matchers._
-import scala.collection.mutable.Queue
-import Model._
+import org.scalatest.wordspec.AnyWordSpec
 class CardSoccer extends AnyWordSpec {
 
   "A CardSoccer game" when {
