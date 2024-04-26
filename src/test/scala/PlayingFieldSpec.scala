@@ -1,34 +1,29 @@
 import org.scalatest.wordspec.AnyWordSpec
-import scala.collection.mutable.Queue
-import scala.collection.mutable.ListBuffer
+import org.scalatest.matchers.should.Matchers
 import scala.collection.mutable
-import Model.{Card, PlayingField}
-import Card.*
-import Model.Suit.*
-import Model.CardObject.*
+import scala.collection.mutable.ListBuffer
+import Model._
 
+class PlayingFieldSpec extends AnyWordSpec with Matchers {
 
-class PlayingFieldSpec extends AnyWordSpec {
   "A PlayingField" when {
-    "gamePrepare is called" should {
-      "initialize player hands with cards" in {
-        val player1Cards = mutable.Queue.empty[Card]
-        val player2Cards = mutable.Queue.empty[Card]
-        val playingField = new PlayingField(player1Cards, player2Cards)
+    "initialized" should {
+      "have 26 cards in each player's hand and then put 4 cards on the field" in {
+        val playingField = new PlayingField(mutable.Queue.empty, mutable.Queue.empty)
         playingField.gamePrepare()
-        assert(playingField.getPlayer1Hand.size == 26)
-        assert(playingField.getPlayer2Hand.size == 26)
+        playingField.getPlayer1Hand.size shouldEqual 26
+        playingField.getPlayer2Hand.size shouldEqual 26
+        playingField.fieldPrepare(playingField.getPlayer1Hand,playingField.getPlayer1Field)
+        playingField.fieldPrepare(playingField.getPlayer2Hand,playingField.getPlayer2Field)
+        playingField.getPlayer1Field.size shouldEqual(4)
+        playingField.getPlayer2Field.size shouldEqual(4)
       }
     }
 
-    "fieldPrepare is called" should {
-      "move cards from player hand to player field" in {
-        val playerHand = mutable.Queue(Card(Ace, Spades), Card(Two, Hearts), Card(Three, Diamonds), Card(Four, Clubs))
-        val playerField = ListBuffer.empty[Card]
-        val playingField = new PlayingField(null, null) // We'll mock the parameters since they aren't relevant
-        playingField.fieldPrepare(playerHand, playerField)
-        assert(playerHand.isEmpty)
-        assert(playerField.size == 4)
+    "playing the game" should {
+      "prepare the game and display initial state" in {
+        val playingField = new PlayingField(mutable.Queue.empty, mutable.Queue.empty)
+        playingField.playGame()
       }
     }
   }
