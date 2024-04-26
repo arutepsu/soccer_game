@@ -1,4 +1,5 @@
 package Model
+
 import CardValue._
 import Suit._
 
@@ -21,19 +22,10 @@ object CardDeck {
   }
 
   def shuffleDeck(deck: mutable.Queue[Card]): Unit = {
-    val buffer = deck
-    val shuffledBuffer = Random.shuffle(buffer)
+    val shuffledBuffer = Random.shuffle(deck)
     deck.clear()
     shuffledBuffer.foreach(deck.enqueue)
   }
-
-  def main(args: Array[String]): Unit = {
-    val deck = createStandardDeck()
-    println("Standard Deck of Cards:")
-    deck.foreach(println)
-
-    shuffleDeck(deck)
-    println("\nShuffled Deck of Cards:")
-    deck.foreach(println)
-  }
 }
+
+

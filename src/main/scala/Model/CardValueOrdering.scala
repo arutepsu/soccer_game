@@ -11,8 +11,6 @@ object CardValueOrdering extends Ordering[CardValue] {
       case (Two, Two) => 0
       case (Two, _) => 1
       case (_, Two) => -1
-//      case (Ace, Two) => -1
-//      case (Two, Ace) => 1
       case (Three, Three) => 0
       case (Three, _) => 1
       case (_, Three) => -1
@@ -47,4 +45,3 @@ object CardValueOrdering extends Ordering[CardValue] {
     }
   }
 }
-

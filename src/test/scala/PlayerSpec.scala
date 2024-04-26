@@ -5,7 +5,6 @@ class PlayerSpec extends AnyWordSpec with Matchers {
   "A Player" should {
     "be created with a nickname and a list of cards" in {
       val player = new Model.Player("Your Name", List("Card1", "Card2", "Card3"))
-      // Add assertions or checks here to verify player's properties
       player.name shouldEqual "Your Name"
       player.cards should contain allOf ("Card1", "Card2", "Card3")
     }

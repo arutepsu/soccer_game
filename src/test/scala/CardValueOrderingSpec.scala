@@ -23,26 +23,16 @@ class CardValueOrderingSpec extends AnyWordSpec {
         (Jack, Queen),
         (Queen, King)
       )
-
-      // Check that for each pair, the first value is greater than the second
+      
       testCases.foreach { case (value1, value2) =>
         assert(ordering.compare(value1, value2) > 0)
+        assert(ordering.compare(value2, value1) < 0) 
       }
-
-      // Also check for equality
-      assert(ordering.compare(Ace, Ace) == 0)
-      assert(ordering.compare(Two, Two) == 0)
-      assert(ordering.compare(Three, Three) == 0)
-      assert(ordering.compare(Four, Four) == 0)
-      assert(ordering.compare(Five, Five) == 0)
-      assert(ordering.compare(Six, Six) == 0)
-      assert(ordering.compare(Seven, Seven) == 0)
-      assert(ordering.compare(Eight, Eight) == 0)
-      assert(ordering.compare(Nine, Nine) == 0)
-      assert(ordering.compare(Ten, Ten) == 0)
-      assert(ordering.compare(Jack, Jack) == 0)
-      assert(ordering.compare(Queen, Queen) == 0)
-      assert(ordering.compare(King, King) == 0)
+      
+      val allValues = Seq(Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King)
+      allValues.foreach { value =>
+        assert(ordering.compare(value, value) == 0)
+      }
     }
   }
 }

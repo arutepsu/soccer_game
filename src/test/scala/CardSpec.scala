@@ -30,5 +30,19 @@ class CardSpec extends AnyWordSpec {
         }
       }
     }
+
+    "compared with another card" should {
+      "return true if both cards have the same value and suit" in {
+        val card1 = Card(Ace, Suit.Hearts)
+        val card2 = Card(Ace, Suit.Hearts)
+        assert(card1 == card2)
+      }
+
+      "return false if cards have different values or suits" in {
+        val card1 = Card(Ace, Suit.Hearts)
+        val card2 = Card(King, Suit.Spades)
+        assert(card1 != card2)
+      }
+    }
   }
 }
