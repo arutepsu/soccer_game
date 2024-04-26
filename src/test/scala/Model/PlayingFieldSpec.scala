@@ -1,8 +1,11 @@
-import org.scalatest.wordspec.AnyWordSpec
+package Model
+
+import Model.*
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import Model._
 
 class PlayingFieldSpec extends AnyWordSpec with Matchers {
 
