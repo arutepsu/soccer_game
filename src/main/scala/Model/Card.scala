@@ -21,4 +21,23 @@ case class Card(value: CardValue, suit: Suit) {
     case Queen => "Queen"
     case King => "King"
   }
+
+  def valueToInt(value: CardValue) : Int = value match {
+    case Ace => 14
+    case Two => 2
+    case Three => 3
+    case Four => 4
+    case Five => 5
+    case Six => 6
+    case Seven => 7
+    case Eight => 8
+    case Nine => 9
+    case Ten => 10
+    case Jack => 11
+    case Queen => 12
+    case King => 13
+  }
+  def compare(card1: CardValue, card2: CardValue): Int = {
+    valueToInt(card1) - valueToInt(card2)
+  }
 }
