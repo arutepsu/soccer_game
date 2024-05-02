@@ -2,13 +2,11 @@ package Model
 
 import scala.collection.mutable.Queue
 import scala.collection.mutable.ListBuffer
-import scala.util.Random
 import CardObject._
-import Suit._
 import CardDeck._
 import scala.io.StdIn
 import scala.collection.mutable
-import Card._
+import Player._
 
 class PlayingField(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queue[Card]) {
   private val player1Hand: mutable.Queue[Card] = mutable.Queue.empty
@@ -45,12 +43,12 @@ class PlayingField(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queu
     }
   }
   def display(): Unit = {
-    //println("Player 1's hand:")
-   // player1Hand.foreach(println)
+    println("Player 1's hand:")
+    player1Hand.foreach(println)
     println("\nPlayer 1's field:")
     player1Field.foreach(println)
-    //println("\nPlayer 2's hand:")
-    //player2Hand.foreach(println)
+    println("\nPlayer 2's hand:")
+    player2Hand.foreach(println)
     println("\nPlayer 2's field:")
     player2Field.foreach(println)
   }
@@ -149,18 +147,4 @@ class PlayingField(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queu
     }
   }
 }
-object PlayingField {
-  def main(args: Array[String]): Unit = {
 
-    val player1Cards = mutable.Queue.empty[Card]
-    val player2Cards = mutable.Queue.empty[Card]
-
-    val playingField = new PlayingField(player1Cards, player2Cards)
-    playingField.gamePrepare()
-    playingField.fieldPrepare(playingField.player1Hand, playingField.player1Field)
-    playingField.fieldPrepare(playingField.player2Hand, playingField.player2Field)
-
-    playingField.playGame()
-
-  }
-}

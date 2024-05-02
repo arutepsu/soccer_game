@@ -1,56 +1,50 @@
-//package Model
-//
-//object Main {
-//  def main(args: Array[String]): Unit = {
-//    println("Welcome to the Card Game!")
-//
-//    print("Enter your username: ")
-//    def username = scala.io.StdIn.readLine()
-//
-//    val player1 = Player(username, List.empty)
-//    println(player1.name)
-//    val player2 = Player("Computer", List.empty)
-//
-//    val playingField = new PlayingField(
-//      player1Cards = scala.collection.mutable.Queue.empty,
-//      player2Cards = scala.collection.mutable.Queue.empty
-//    )
-//
-//    // Start the game
-//    playingField.playGame()
-//
-//    println(player1)
-//    println(player2)
-//  }
-//}
-import Model.*
 
+import Model.*
+import aview.TUI
+
+import scala.collection.mutable
 import scala.io.StdIn
-object Main {
+import controller.Controller
+/*object Main {
   def main(args: Array[String]): Unit = {
     println("Welcome to the Card Game!")
 
     //    val username = scala.io.StdIn.readLine()
     print("Enter your username: ")
     var username = ""
-    username = StdIn.readLine("What is your name?")
+    username = StdIn.readLine()
 
     val player1 = Player(username, List.empty)
 
     val player2 = Player("Computer", List.empty)
     println(s"Player 2: ${player2.name}")
 
-    val playingField = new PlayingField(
-      player1Cards = scala.collection.mutable.Queue.empty,
-      player2Cards = scala.collection.mutable.Queue.empty
-    )
+    val player1Cards = mutable.Queue.empty[Card]
+    val player2Cards = mutable.Queue.empty[Card]
 
-    // Start the game
+    val playingField = new PlayingField(player1Cards, player2Cards)
+
+    playingField.gamePrepare()
+    playingField.fieldPrepare(playingField.getPlayer1Hand, playingField.getPlayer1Field)
+    playingField.fieldPrepare(playingField.getPlayer1Hand, playingField.getPlayer2Field)
     playingField.playGame()
-    println(s"\nFinal status of ${player1.name}:")
-    println(player1)
-    println(s"\nFinal status of ${player2.name}:")
-    println(player2)
+  }
+}*/
 
+
+object Main {
+  val Controller = new Controller()
+  val Tui = new TUI(Controller)
+  Controller.notifyObservers
+  def main(args: Array[String]): Unit = {
+
+    Tui.displayWelcomeMessage()
+
+    val username = Tui.getUserName
+    val player1 = Player(username, List.empty)
+    val player2 = Player("CPU", List.empty)
+
+    Controller.startGame()
+    Tui.displayFinalStatus(player1,player1)
   }
 }
