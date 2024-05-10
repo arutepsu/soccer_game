@@ -33,7 +33,9 @@ import controller.Controller
 
 
 object Main {
-  val Controller = new Controller()
+  val Controller = new Controller(new PlayingField(
+    player1Cards = scala.collection.mutable.Queue.empty,
+    player2Cards = scala.collection.mutable.Queue.empty))
   val Tui = new TUI(Controller)
   Controller.notifyObservers
   def main(args: Array[String]): Unit = {
@@ -44,7 +46,8 @@ object Main {
     val player1 = Player(username, List.empty)
     val player2 = Player("CPU", List.empty)
 
-    Controller.startGame()
+    Controller.startGame(attackPos = Tui.attackInput())
+
     Tui.displayFinalStatus(player1,player1)
   }
 }

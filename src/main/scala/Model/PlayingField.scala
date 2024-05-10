@@ -2,11 +2,13 @@ package Model
 
 import scala.collection.mutable.Queue
 import scala.collection.mutable.ListBuffer
-import CardObject._
-import CardDeck._
+import CardObject.*
+import CardDeck.*
+
 import scala.io.StdIn
 import scala.collection.mutable
-import Player._
+import Player.*
+import jdk.internal.util.xml.impl.Input
 
 class PlayingField(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queue[Card]) {
   private val player1Hand: mutable.Queue[Card] = mutable.Queue.empty
@@ -70,10 +72,9 @@ class PlayingField(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queu
     }
   }
 
-  def playGame(): Unit = {
+  def playRound() : Unit = {
     var currentPlayer = 1 // Start with player 1
     var gameOver = false
-
     while (!gameOver) {
       // Determine the current player's hand, field, and opponent's field
       val (currentHand, currentField, opponentField) = currentPlayer match {
@@ -84,16 +85,19 @@ class PlayingField(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queu
       if (currentHand.isEmpty) {
         println(s"Player $currentPlayer has no cards left in hand.")
         gameOver = true
+      } else if (player1Hand.isEmpty || player2Hand.isEmpty) {
+        gameOver = true
+        println("Game Over!")
       } else {
-        // Display current game state
-        display()
+        playGame()
+      }
+    }
 
-        // Player chooses positions to attack
-        println(s"Player $currentPlayer, choose positions to attack (0, 1, 2, or 3, separated by spaces): ")
-        val input = StdIn.readLine()
-        val attackPositions = if (input.trim.isEmpty) Array.empty[Int] else input.split(" ").map(_.toInt)
-
-        // Ensure the attack positions are valid
+  def playGame(): Unit = {
+    var attackFlags = false
+    display()
+    val attackPositions = if (pos.trim.isEmpty) Array.empty[Int] else pos.split(" ").map(_.toInt)
+    // Ensure the attack positions are valid
         val validAttackPositions = attackPositions.filter(pos => pos >= 0 && pos < opponentField.size)
 
         // Perform attacks
@@ -101,19 +105,20 @@ class PlayingField(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queu
           val attackingCard = currentHand.head
           val defendingCard = opponentField(attackPosition)
           val comparison = attackingCard.compare(attackingCard.value, defendingCard.value)
-
           if (comparison >= 1) {
             println(s"Player $currentPlayer attacks with $attackingCard, defeating $defendingCard.")
             opponentField.remove(attackPosition)
             currentHand.dequeue()
             currentField += attackingCard
           } else if (comparison <= -1) {
-              println(s"Player $currentPlayer attacks with $attackingCard, but $defendingCard defends.")
-              currentHand.dequeue()
-              player2Hand.enqueue(defendingCard)
-              opponentField.remove(attackPosition)
+            println(s"Player $currentPlayer attacks with $attackingCard, but $defendingCard defends.")
+            currentHand.dequeue()
+            player2Hand.enqueue(defendingCard)
+            opponentField.remove(attackPosition)
+            attackFlags = true
           } else if (comparison == 0) {
             println(s"Player $currentPlayer attacks with $attackingCard, but $defendingCard has the same value.")
+            attackFlags
           }
         }
         // Fill blank positions on the field
@@ -136,15 +141,8 @@ class PlayingField(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queu
           }
         }
         // Switch to the other player
-        currentPlayer = if (currentPlayer == 1) 2 else 1
-
-        // Check if any player has run out of cards
-        if (player1Hand.isEmpty || player2Hand.isEmpty) {
-          gameOver = true
-          println("Game Over!")
-        }
+        currentPlayer = if (currentPlayer == 1 && !attackFlags) 2 else 1
       }
     }
-  }
 }
 
