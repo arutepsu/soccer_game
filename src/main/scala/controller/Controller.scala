@@ -6,10 +6,6 @@ import scala.collection.mutable
 import model.CardDeck.*
 
 class Controller(var playingField: PlayingField) extends Observable {
-
-//  private val playingField = new PlayingField(
-//    player1Cards = scala.collection.mutable.Queue.empty,
-//    player2Cards = scala.collection.mutable.Queue.empty )
   def startGame() : Unit = {
     playingField.gamePrepare()
     playingField.fieldPrepare(playingField.getPlayer1Hand, playingField.getPlayer1Field)
