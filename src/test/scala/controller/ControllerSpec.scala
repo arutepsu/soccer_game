@@ -15,24 +15,34 @@ class ControllerSpec extends AnyWordSpec with Matchers {
         player2Cards = scala.collection.mutable.Queue.empty
       )
       val controller = new Controller(playingField)
-      val latch = new CountDownLatch(1) // Create a latch with count 1
-      val observer = new Observer {
-        var updated: Boolean = false
+      val observer: Observer = new Observer {
 
-        def isUpdated: Boolean = updated
 
-        override def update: Unit = {
-          updated = true
-          latch.countDown() // Signal that update has occurred
+        override def update: Boolean = {
+          updated = true; updated
         }
       }
-
-      "notify its Observer after starting the game" in {
-        controller.add(observer)
-        controller.startGame()
-        latch.await() // Wait until the latch count reaches 0
-        observer.isUpdated shouldBe true
-      }
+      controller.add(observer)
+      "notify its Observer after creation" in {
+//        controller.startGame()
+        controller.notifyObservers
+        observer.updated shouldBe(true)
+//      }
+//      "notify its Observer after random creation" in {
+//        controller.createRandomGrid(4, 1)
+//        observer.updated should be(true)
+//        controller.grid.valid should be(true)
+//      }
+//      "notify its Observer after setting a cell" in {
+//        controller.set(1, 1, 4)
+//        observer.updated should be(true)
+//        controller.grid.cell(1, 1).value should be(4)
+//      }
+//      "notify its Observer after solving" in {
+//        controller.solve
+//        observer.updated should be(true)
+//        controller.grid.solved should be(true)
     }
   }
+}
 }

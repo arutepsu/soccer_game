@@ -7,9 +7,8 @@ class ObservableSpec extends AnyWordSpec with Matchers {
   "An Observable" should {
     val observable = new Observable
     val observer = new Observer {
-      var updated: Boolean = false
-      def isUpdated: Boolean = updated
-      override def update: Unit = { updated = true }
+
+      override def update: Boolean = { true }
     }
     "add an Observer" in {
       observable.add(observer)
