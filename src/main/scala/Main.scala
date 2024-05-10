@@ -1,23 +1,51 @@
-object Main extends App { // Extend App to make the class executable
-  object Count {
-    var countCards: Int = 0
+//package Model
+//
+//object Main {
+//  def main(args: Array[String]): Unit = {
+//    println("Welcome to the Card Game!")
+//
+//    print("Enter your username: ")
+//    def username = scala.io.StdIn.readLine()
+//
+//    val player1 = Player(username, List.empty)
+//    println(player1.name)
+//    val player2 = Player("Computer", List.empty)
+//
+//    val playingField = new PlayingField(
+//      player1Cards = scala.collection.mutable.Queue.empty,
+//      player2Cards = scala.collection.mutable.Queue.empty
+//    )
+//
+//    // Start the game
+//    playingField.playGame()
+//
+//    println(player1)
+//    println(player2)
+//  }
+//}
+import model.*
+
+import scala.io.StdIn
+import aview.Tui
+import controller.Controller
+object Main {
+  val Controller = new Controller(
+    new PlayingField(
+    player1Cards = scala.collection.mutable.Queue.empty,
+    player2Cards = scala.collection.mutable.Queue.empty
+    )
+  )
+  val Tui = new Tui(Controller)
+  Controller.notifyObservers
+  def main(args: Array[String]): Unit = {
+
+    Tui.displayWelcomeMessage()
+
+    val username = Tui.getUserName
+    val player1 = Player(username, List.empty)
+    val player2 = Player("CPU", List.empty)
+
+    Controller.startGame()
+    Tui.displayFinalStatus(player1,player1)
   }
-
-  // Define createDeck method here or make it accessible
-  // to the main method
-  def createDeck(): List[String] = {
-    val suits_list = List("Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "King", "Queen", "Jack").flatMap(number => List("Hearts",
-      "Diamonds", "Spades", "Clubs").map(suit => s"$number of $suit"))
-
-    suits_list
-  }
-
-  println(Count.countCards) // Accessing the global variable
-
-  // Use suits_list instead of createDeck()
-  for (x <- createDeck()) {
-    println(x)
-    Count.countCards += 1
-  }
-  println(Count.countCards)
 }
