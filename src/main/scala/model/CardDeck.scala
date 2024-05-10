@@ -1,7 +1,8 @@
-package Model
-
+package model
+import scala.collection.mutable.Queue
 import CardValue._
 import Suit._
+import Card._
 
 import scala.collection.mutable
 import scala.util.Random
@@ -22,10 +23,18 @@ object CardDeck {
   }
 
   def shuffleDeck(deck: mutable.Queue[Card]): Unit = {
-    val shuffledBuffer = Random.shuffle(deck)
+    val buffer = deck.toBuffer
+    val shuffledBuffer = Random.shuffle(buffer)
     deck.clear()
     shuffledBuffer.foreach(deck.enqueue)
   }
+  /*def main(args: Array[String]): Unit = {
+    val deck = createStandardDeck()
+    println("Standard Deck of Cards:")
+    deck.foreach(println)
+
+    shuffleDeck(deck)
+    println("\nShuffled Deck of Cards:")
+    deck.foreach(println)
+  }*/
 }
-
-

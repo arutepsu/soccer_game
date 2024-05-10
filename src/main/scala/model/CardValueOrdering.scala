@@ -1,6 +1,6 @@
-package Model
+package model
 
-import Model.CardValue._
+import model.CardValue._
 
 object CardValueOrdering extends Ordering[CardValue] {
   def compare(cardValue1: CardValue, cardValue2: CardValue): Int = {

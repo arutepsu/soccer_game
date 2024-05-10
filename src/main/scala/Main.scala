@@ -23,33 +23,29 @@
 //    println(player2)
 //  }
 //}
-package Model
+import model.*
 
+import scala.io.StdIn
+import aview.Tui
+import controller.Controller
 object Main {
-  def main(args: Array[String]): Unit = {
-    println("Welcome to the Card Game!")
-
-//    val username = scala.io.StdIn.readLine()
-    print("Enter your username: ")
-    var username = ""
-    username=scala.io.StdIn.readLine()
-
-    val player1 = Player(username, List.empty)
-
-    val player2 = Player("Computer", List.empty)
-    println(s"Player 2: ${player2.name}")
-
-    val playingField = new PlayingField(
-      player1Cards = scala.collection.mutable.Queue.empty,
-      player2Cards = scala.collection.mutable.Queue.empty
+  val Controller = new Controller(
+    new PlayingField(
+    player1Cards = scala.collection.mutable.Queue.empty,
+    player2Cards = scala.collection.mutable.Queue.empty
     )
+  )
+  val Tui = new Tui(Controller)
+  Controller.notifyObservers
+  def main(args: Array[String]): Unit = {
 
-    // Start the game
-    playingField.playGame()
-    println(s"\nFinal status of ${player1.name}:")
-    println(player1)
-    println(s"\nFinal status of ${player2.name}:")
-    println(player2)
+    Tui.displayWelcomeMessage()
 
+    val username = Tui.getUserName
+    val player1 = Player(username, List.empty)
+    val player2 = Player("CPU", List.empty)
+
+    Controller.startGame()
+    Tui.displayFinalStatus(player1,player1)
   }
 }

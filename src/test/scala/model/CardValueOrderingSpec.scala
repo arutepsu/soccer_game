@@ -1,7 +1,7 @@
-package Model
+package model
 
-import Model.*
-import Model.CardValue.*
+import model.*
+import model.CardValue.*
 import org.scalatest.wordspec.AnyWordSpec
 
 class CardValueOrderingSpec extends AnyWordSpec {

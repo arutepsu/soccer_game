@@ -1,4 +1,4 @@
-package Model
+package model
 
 object CardValue {
   sealed trait CardValue
