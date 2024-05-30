@@ -24,24 +24,8 @@ class ControllerSpec extends AnyWordSpec with Matchers {
       }
       controller.add(observer)
       "notify its Observer after creation" in {
-//        controller.startGame()
         controller.notifyObservers
         observer.updated shouldBe(true)
-//      }
-//      "notify its Observer after random creation" in {
-//        controller.createRandomGrid(4, 1)
-//        observer.updated should be(true)
-//        controller.grid.valid should be(true)
-//      }
-//      "notify its Observer after setting a cell" in {
-//        controller.set(1, 1, 4)
-//        observer.updated should be(true)
-//        controller.grid.cell(1, 1).value should be(4)
-//      }
-//      "notify its Observer after solving" in {
-//        controller.solve
-//        observer.updated should be(true)
-//        controller.grid.solved should be(true)
     }
   }
 }
