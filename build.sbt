@@ -1,5 +1,5 @@
 import sbt.Keys.connectInput
-import JacocoKeys._
+import sbt.JacocoKeys._
 
 ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion := "3.4.1"
