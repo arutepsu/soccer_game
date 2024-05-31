@@ -15,27 +15,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
           java-version: '11'
           distribution: 'adopt'
-      - name: Compile
-        run: sbt compile
-      - name: Run tests
-        run: sbt test
-
-  run_tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 11
-        uses: actions/setup-java@v2
+      
+      - name: Cache sbt
+        uses: actions/cache@v2
         with:
-          java-version: '11'
-          distribution: 'adopt'
-      - name: Build Project and export Coverage
+          path: |
+            ~/.ivy2/cache
+            ~/.sbt
+          key: ${{ runner.os }}-sbt-${{ hashFiles('**/build.sbt') }}
+          restore-keys: |
+            ${{ runner.os }}-sbt-
+      
+      - name: Build and test
+        run: |
+          sbt clean compile test
+          
+      - name: Run coverage and report to Coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
@@ -43,4 +46,5 @@ jobs:
           sbt coverageReport
           sbt coverageAggregate
           sbt coveralls
+
 
