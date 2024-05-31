@@ -10,11 +10,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
       - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          # Explicitly specify Node.js version 20
-          node-version: '20'
 
       - name: Set up JDK 11
         uses: actions/setup-java@v2
@@ -60,4 +62,5 @@ jobs:
           sbt clean coverage test
           sbt coverageReport
           sbt coverageAggregate
+
 
