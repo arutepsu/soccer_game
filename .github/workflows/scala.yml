@@ -61,5 +61,5 @@ jobs:
           sbt clean coverage test
           sbt coverageReport
           sbt coverageAggregate
-          sbt coveralls
+          sbt -Dcoveralls.serviceName=$COVERALLS_SERVICE_NAME coveralls
 
