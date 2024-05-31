@@ -48,6 +48,7 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          COVERALLS_SERVICE_NAME: "github"
         run: |
           echo "CI_NAME=$CI_NAME"
           echo "CI_BUILD_ID=$CI_BUILD_ID"
