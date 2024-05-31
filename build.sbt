@@ -7,11 +7,13 @@ lazy val root = (project in file("."))
   .settings(
     name := "SoccerGame",
     connectInput / run := true,
-    libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.18",
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.18" % "test",
-    // Add the scoverage settings
+    libraryDependencies ++= Seq(
+      "org.scalactic" %% "scalactic" % "3.2.18",
+      "org.scalatest" %% "scalatest" % "3.2.18" % Test
+    ),
+    // Scoverage settings
     coverageEnabled := true,
-    coverageMinimum := 80,
+    coverageMinimum := 80,  // Specify the coverage minimum percentage
     coverageFailOnMinimum := true,
     coverageHighlighting := true
   )
