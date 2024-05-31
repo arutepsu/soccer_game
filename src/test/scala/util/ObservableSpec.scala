@@ -15,10 +15,10 @@ class ObservableSpec extends AnyWordSpec with Matchers {
       observable.subscribers should contain(observer)
     }
     "notify an Observer" in {
-//      observer.isUpdated should be(false)
-//      observer.update
+      //      observer.isUpdated should be(false)
+      //      observer.update
       observable.notifyObservers
-//      observer.isUpdated should be(true)
+      //      observer.isUpdated should be(true)
       observer.update
 
     }
