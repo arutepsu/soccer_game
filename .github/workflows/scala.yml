@@ -1,3 +1,7 @@
+ # This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
 name: Scala CI
 
 on:
@@ -10,11 +14,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -62,5 +61,3 @@ jobs:
           sbt clean coverage test
           sbt coverageReport
           sbt coverageAggregate
-
-
