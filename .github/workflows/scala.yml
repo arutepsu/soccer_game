@@ -2,7 +2,6 @@
 # They are provided by a third-party and are governed by
 # separate terms of service, privacy policy, and support
 # documentation.
-
 name: Scala CI
 
 on:
@@ -41,10 +40,13 @@ jobs:
       - name: Run coverage and report to Coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
         run: |
+          export CI_NAME="github-actions"
+          export CI_BUILD_ID="${{ github.run_id }}"
+          export CI_BUILD_NUMBER="${{ github.run_number }}"
           sbt clean coverage test
           sbt coverageReport
           sbt coverageAggregate
           sbt coveralls
-
-
