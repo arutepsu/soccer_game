@@ -48,8 +48,6 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          COVERALLS_SERVICE_NAME: "github"
-          COVERALLS_SERVICE_JOB_ID: ${{ github.run_id }}
         run: |
           echo "CI_NAME=$CI_NAME"
           echo "CI_BUILD_ID=$CI_BUILD_ID"
@@ -61,6 +59,6 @@ jobs:
           sbt clean coverage test
           sbt coverageReport
           sbt coverageAggregate
-          sbt coveralls -Dcoveralls.serviceName=$COVERALLS_SERVICE_NAME
+          sbt coveralls
 
 
