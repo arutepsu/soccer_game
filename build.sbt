@@ -14,5 +14,9 @@ lazy val root = (project in file("."))
     // Scoverage settings
     coverageEnabled := true,
     coverageFailOnMinimum := true,
-    coverageHighlighting := true
+    coverageHighlighting := true,
+    // Coveralls settings
+    coverallsToken := Some(sys.env.getOrElse("COVERALLS_REPO_TOKEN", "")),
+    coverallsServiceName := Some("github"),
+    coverallsServiceJobId := Some(sys.env.getOrElse("GITHUB_RUN_ID", ""))
   )
