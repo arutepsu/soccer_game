@@ -11,7 +11,6 @@ lazy val root = (project in file("."))
       "org.scalactic" %% "scalactic" % "3.2.18",
       "org.scalatest" %% "scalatest" % "3.2.18" % Test
     ),
-    // Scoverage settings
     coverageEnabled := true,
     coverageFailOnMinimum := true,
     coverageHighlighting := true
