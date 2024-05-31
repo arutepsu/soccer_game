@@ -1,4 +1,5 @@
 import sbt.Keys.connectInput
+import coveralls.CoverallsPlugin.autoImport._
 
 ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion := "3.4.1"
