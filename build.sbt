@@ -14,8 +14,5 @@ lazy val root = (project in file("."))
     // Scoverage settings
     coverageEnabled := true,
     coverageFailOnMinimum := true,
-    coverageHighlighting := true,
-    // Configure sbt-coveralls plugin
-    coverallsToken := Some(sys.env.get("COVERALLS_REPO_TOKEN")),
-    coverallsServiceName := Some("github")
-  )
+    coverageHighlighting := true
+  )  
