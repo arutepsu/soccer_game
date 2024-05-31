@@ -40,6 +40,7 @@ jobs:
       - name: Run coverage and report to Coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          COVERALLS_SERVICE_NAME: "github" # Set the service name here
           CI: true
           CI_NAME: "github-actions"
           CI_BUILD_ID: ${{ github.run_id }}
