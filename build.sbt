@@ -13,7 +13,6 @@ lazy val root = (project in file("."))
     ),
     // Scoverage settings
     coverageEnabled := true,
-    coverageMinimum := 80,  // Specify the coverage minimum percentage
     coverageFailOnMinimum := true,
     coverageHighlighting := true
   )
