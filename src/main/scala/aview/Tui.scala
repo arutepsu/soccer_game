@@ -24,6 +24,17 @@ class Tui(controller: Controller) extends Observer {
     println(player2)
   }
 
+  def processInputLine(input: String): Unit = {
+    input match {
+      case "q" =>
+      case "show" => controller.showMe()
+      case "p" => controller.playGame()
+      case "s" => controller.startGame()
+      case "u" => controller.undo()
+      case "r" => controller.redo()
+      case "d" => controller.doStep()
+    }
+  }
   override def update: Boolean = {
     true
   }

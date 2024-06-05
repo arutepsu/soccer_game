@@ -1,6 +1,6 @@
 package model
 
-import model.CardValue._
+import model.CardObject._
 import model.Suit.Suit
 
 case class Card(value: CardValue, suit: Suit) {
@@ -38,6 +38,11 @@ case class Card(value: CardValue, suit: Suit) {
     case King => 13
   }
   def compare(card1: CardValue, card2: CardValue): Int = {
-    valueToInt(card1) - valueToInt(card2)
+    val value : Int = valueToInt(card1) - valueToInt(card2)
+    if (value == -12) {
+      1
+    } else {
+      value
+    }
   }
 }

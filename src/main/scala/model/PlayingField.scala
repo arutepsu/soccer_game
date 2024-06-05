@@ -5,7 +5,6 @@ import CardObject._
 import CardDeck._
 import scala.io.StdIn
 import scala.collection.mutable
-import Player._
 
 class PlayingField(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queue[Card]) {
   private val player1Hand: mutable.Queue[Card] = mutable.Queue.empty
@@ -27,12 +26,14 @@ class PlayingField(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queu
     }
   }
 
+  def gameBeforeStarting() : Unit = {
+    println("Waiting for game to start...")
+  }
+
   def getPlayer1Hand: mutable.Queue[Card] = player1Hand
   def getPlayer2Hand: mutable.Queue[Card] = player2Hand
   def getPlayer1Field: ListBuffer[Card] = player1Field
   def getPlayer2Field: ListBuffer[Card] = player2Field
-
-
 
   def fieldPrepare(playerHand: mutable.Queue[Card], playerField: ListBuffer[Card]) : Unit = {
     for (_ <- 1 to 4) { //  each player gets 4 cards initially

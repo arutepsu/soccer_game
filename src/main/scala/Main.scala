@@ -28,6 +28,8 @@ import model.*
 import scala.io.StdIn
 import aview.Tui
 import controller.Controller
+
+import scala.io.StdIn.readLine
 object Main {
   val Controller = new Controller(
     new PlayingField(
@@ -38,14 +40,13 @@ object Main {
   val Tui = new Tui(Controller)
   Controller.notifyObservers
   def main(args: Array[String]): Unit = {
-
     Tui.displayWelcomeMessage()
-
-    val username = Tui.getUserName
-    val player1 = Player(username, List.empty)
-    val player2 = Player("CPU", List.empty)
-
-    Controller.startGame()
-    Tui.displayFinalStatus(player1,player1)
+    var input: String = ""
+    if (args.length > 0) input = args(0)
+    if (input.nonEmpty) Tui.processInputLine(input)
+    else while input != "q" do {
+      input = readLine()
+      Tui.processInputLine(input)
+    }
   }
 }

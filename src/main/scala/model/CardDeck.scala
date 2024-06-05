@@ -1,6 +1,6 @@
 package model
 import scala.collection.mutable.Queue
-import CardValue._
+import CardObject._
 import Suit._
 import Card._
 
@@ -23,7 +23,7 @@ object CardDeck {
   }
 
   def shuffleDeck(deck: mutable.Queue[Card]): Unit = {
-    val buffer = deck.toBuffer
+    val buffer = deck
     val shuffledBuffer = Random.shuffle(buffer)
     deck.clear()
     shuffledBuffer.foreach(deck.enqueue)
