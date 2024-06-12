@@ -24,7 +24,7 @@ object PlayerTurnState extends model.PlayingFieldState {
     checkFourthCardAttack(player1Hand, player1Field, player2Field)
   }
 
-  private def display(player1Hand: mutable.Queue[Card], player1Field: ListBuffer[Card], player2Hand: mutable.Queue[Card], player2Field: ListBuffer[Card]): Unit = {
+   def display(player1Hand: mutable.Queue[Card], player1Field: ListBuffer[Card], player2Hand: mutable.Queue[Card], player2Field: ListBuffer[Card]): Unit = {
     println("Player 1's hand:")
     player1Hand.foreach(println)
     println("\nPlayer 1's field:")

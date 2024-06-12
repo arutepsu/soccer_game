@@ -29,7 +29,7 @@ class PlayingFieldSpec extends AnyWordSpec with Matchers {
     "playing the game" should {
       "prepare the game and display initial state" in {
         val playingField = new PlayingField(mutable.Queue.empty, mutable.Queue.empty)
-        playingField.playGame() 
+        playingField.playGame()
       }
     }
   }

@@ -6,16 +6,16 @@ import scala.collection.mutable
 import scala.io.StdIn
 
 class PlayingFieldPattern(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queue[Card]) {
-  private val player1Hand: mutable.Queue[Card] = mutable.Queue.empty
-  private val player2Hand: mutable.Queue[Card] = mutable.Queue.empty
-  private val player1Field: ListBuffer[Card] = ListBuffer.empty
-  private val player2Field: ListBuffer[Card] = ListBuffer.empty
+  val player1Hand: mutable.Queue[Card] = mutable.Queue.empty
+  val player2Hand: mutable.Queue[Card] = mutable.Queue.empty
+   val player1Field: ListBuffer[Card] = ListBuffer.empty
+   val player2Field: ListBuffer[Card] = ListBuffer.empty
 
   // State pattern:
-  private var currentState: PlayingFieldState = PlayerTurnState
+   var currentState: PlayingFieldState = PlayerTurnState
 
   // Strategy pattern:
-  private var comparisonStrategy: ComparisonStrategy = CardComparisonStrategies.StandardComparison
+   var comparisonStrategy: ComparisonStrategy = CardComparisonStrategies.StandardComparison
 
   // Factory pattern:
   def setComparisonStrategy(strategyType: String): Unit = {
