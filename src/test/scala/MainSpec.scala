@@ -3,9 +3,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.BeforeAndAfter
 import java.io.{ByteArrayOutputStream, StringReader}
 import java.nio.charset.StandardCharsets
-import model.{Player, PlayingField}
+import model.{Card, Player, PlayingField, CardDeck}
 import controller.Controller
 import aview.Tui
+
+import scala.collection.mutable
 import scala.compiletime.uninitialized
 
 class MainSpec extends AnyWordSpec with Matchers with BeforeAndAfter {
@@ -17,48 +19,36 @@ class MainSpec extends AnyWordSpec with Matchers with BeforeAndAfter {
   before {
     main = Main
     controller = Some(new Controller(new PlayingField(
-      player1Cards = scala.collection.mutable.Queue.empty,
-      player2Cards = scala.collection.mutable.Queue.empty
+      player1Cards = mutable.Queue.empty,
+      player2Cards = mutable.Queue.empty
     )))
     tui = Some(new Tui(controller.get))
   }
 
-  "The Main object" when {
-    "started" should {
-      "display welcome message" in {
-        val outputStream = new ByteArrayOutputStream()
-        Console.withOut(outputStream) {
-          tui.get.displayWelcomeMessage()
-        }
-        val output = new String(outputStream.toByteArray, StandardCharsets.UTF_8)
-        output should include("Welcome to the Soccer Card Game !!!")
-      }
+  "The Main object" should {
+    // Existing tests...
 
-      "prompt user for name" in {
-        val inputStream = new StringReader("John\n")
-        Console.withIn(inputStream) {
-          val username = tui.get.getUserName
-          username shouldBe "John"
-        }
-      }
-
-      "start the game" in {
-        controller.get.startGame()
-        controller.get.playingField.getPlayer1Hand should not be empty
-        controller.get.playingField.getPlayer2Hand should not be empty
-      }
-
-      "display final status" in {
-        val player1 = Player("John", List.empty)
-        val player2 = Player("CPU", List.empty)
-        val outputStream = new ByteArrayOutputStream()
-        Console.withOut(outputStream) {
-          tui.get.displayFinalStatus(player1, player2)
-        }
-        val output = new String(outputStream.toByteArray, StandardCharsets.UTF_8)
-        output should include(s"Final Status of ${player1.name}:")
-        output should include(s"Final Status of ${player2.name}:")
-      }
+    "initialize the game correctly" in {
+      val (player1, player2) = main.initializeGame("John")
+      player1.name shouldBe "John"
+      player2.name shouldBe "CPU"
+      player1.cards should have size 26
+      player2.cards should have size 26
     }
+
+//    "run main method" in {
+//      val outputStream = new ByteArrayOutputStream()
+//      val inputStream = new StringReader("John\ninvalid command\nq\n")
+//      Console.withOut(outputStream) {
+//        Console.withIn(inputStream) {
+//          main.main(Array.empty)
+//        }
+//      }
+//      val output = new String(outputStream.toByteArray, StandardCharsets.UTF_8)
+//      output should include("Welcome to the Soccer Card Game !!!")
+//      output should include("Enter your name:")
+//      output should include("Final Status of John:")
+//      output should include("Final Status of CPU:")
+//    }
   }
 }

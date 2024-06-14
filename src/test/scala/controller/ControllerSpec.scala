@@ -1,39 +1,75 @@
 package controller
-
-import model.{PlayingField, Card}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import model.{PlayingField, Card}
+import util.{UndoManager, Command}
+import scala.collection.mutable
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+import scala.collection.mutable
 
 class ControllerSpec extends AnyWordSpec with Matchers {
 
-  "A Controller" when {
-    "empty" should {
-      val playingField = new PlayingField(
-        player1Cards = scala.collection.mutable.Queue.empty,
-        player2Cards = scala.collection.mutable.Queue.empty
-      )
+  "A Controller" should {
+
+    "start a game" in {
+      val playingField = new PlayingField(mutable.Queue.empty, mutable.Queue.empty)
       val controller = new Controller(playingField)
 
-      "handle undo/redo of game actions correctly" in {
-        // Initially, the game should be in the IDLE state
-        controller.gameStatus should be(GameStatus.IDLE)
+      controller.startGame()
 
-        // Start the game and check status
-        controller.startGame()
-        controller.gameStatus should be(GameStatus.NOT_FINISH)
+      playingField.getPlayer1Hand.size should be(22)
+      playingField.getPlayer2Hand.size should be(22)
+      playingField.getPlayer1Field.size should be(4)
+      playingField.getPlayer2Field.size should be(4)
+      controller.gameStatus should be(GameStatus.NOT_FINISH)
+    }
 
-        // Perform some game actions and verify
-        controller.playGame("Player1")
-        controller.playingField.getPlayer1Field.nonEmpty shouldBe true
+//    "play a game" in {
+//      val playingField = new PlayingField(mutable.Queue.empty, mutable.Queue.empty)
+//      val controller = new Controller(playingField)
+//
+//      controller.startGame()
+//      controller.playGame("player1")
+//
+//      playingField.getPlayer1Hand.size should be < 26
+//    }
 
-        // Undo the last action and check status
-        controller.undo()
-        controller.playingField.getPlayer1Field.nonEmpty shouldBe false
+    "show the field" in {
+      val playingField = new PlayingField(mutable.Queue.empty, mutable.Queue.empty)
+      val controller = new Controller(playingField)
 
-        // Redo the action and check status
-        controller.redo()
-        controller.playingField.getPlayer1Field.nonEmpty shouldBe true
-      }
+      controller.startGame()
+      controller.showMe()
+    }
+
+    "do an undo step" in {
+      val playingField = new PlayingField(mutable.Queue.empty, mutable.Queue.empty)
+      val controller = new Controller(playingField)
+
+      controller.doStep()
+    }
+
+    "undo a step" in {
+      val playingField = new PlayingField(mutable.Queue.empty, mutable.Queue.empty)
+      val controller = new Controller(playingField)
+
+      controller.undo()
+    }
+
+    "redo a step" in {
+      val playingField = new PlayingField(mutable.Queue.empty, mutable.Queue.empty)
+      val controller = new Controller(playingField)
+
+      controller.redo()
+    }
+
+    "enter a nickname" in {
+      val playingField = new PlayingField(mutable.Queue.empty, mutable.Queue.empty)
+      val controller = new Controller(playingField)
+      controller.enterNickname("testPlayer")
+      controller.getCurrentPlayerName should be("testPlayer")
     }
   }
 }

@@ -1,7 +1,9 @@
 package controller
 
-import model.{PlayingField, Card}
-import util.{UndoManager, Command}
+import model.{Card, PlayingField}
+import util.{Command, UndoManager}
+
+import scala.collection.mutable
 import scala.swing.Publisher
 import scala.swing.event.Event
 
@@ -52,4 +54,12 @@ class Controller(var playingField: PlayingField) extends Publisher {
   def getCurrentPlayerName: String = currentPlayerName
 
   def getStatusText: String = GameStatus.message(gameStatus)
+
+  def getPlayer1Hand: mutable.Queue[Card] = playingField.getPlayer1Hand
+
+  def getPlayer2Hand: mutable.Queue[Card] = playingField.getPlayer2Hand
+
+  def getPlayer1Field: mutable.ListBuffer[Card] = playingField.getPlayer1Field
+  def getPlayer2Field: mutable.ListBuffer[Card] = playingField.getPlayer2Field
+  
 }

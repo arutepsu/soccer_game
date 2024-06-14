@@ -1,5 +1,8 @@
 package util
 
 class TestObject extends Observer {
-  def update:Boolean = true
+  override def update: Boolean = {
+    updated = true
+    updated
+  }
 }

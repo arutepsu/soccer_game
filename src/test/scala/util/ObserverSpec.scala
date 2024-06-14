@@ -75,7 +75,7 @@ class ObserverSpec extends AnyWordSpec {
       }
       observable.add(observer1)
       observable.add(observer2)
-      observable.notifyObservers
+      observable.notifyObservers()
       assert(observer1.isUpdated)
       assert(observer2.isUpdated)
     }

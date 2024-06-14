@@ -21,6 +21,7 @@ class Tui(controller: Controller) extends Reactor {
   def displayFinalStatus(player1: Player, player2: Player): Unit = {
     println(s"\nFinal Status of ${player1.name}:")
     println(player1)
+
     println(s"\nFinal Status of ${player2.name}:")
     println(player2)
   }
