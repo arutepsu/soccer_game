@@ -12,11 +12,15 @@ class Controller(var playingField: PlayingField) extends Publisher {
   var gameStatus: GameStatus.Value = GameStatus.IDLE
   private val undoManager = new UndoManager
   private var currentPlayerName: String = ""
+  private var player1Hand: mutable.Queue[Card] = mutable.Queue.empty[Card]
+  private var player2Hand: mutable.Queue[Card] = mutable.Queue.empty[Card]
 
   def startGame(): Unit = {
     playingField.gamePrepare()
-    playingField.fieldPrepare(playingField.getPlayer1Hand, playingField.getPlayer1Field)
-    playingField.fieldPrepare(playingField.getPlayer2Hand, playingField.getPlayer2Field)
+    player1Hand = playingField.getPlayer1Hand.take(26)
+    player2Hand = playingField.getPlayer2Hand.take(26)
+    playingField.fieldPrepare(player1Hand, playingField.getPlayer1Field)
+    playingField.fieldPrepare(player2Hand, playingField.getPlayer2Field)
     gameStatus = GameStatus.NOT_FINISH
     publish(new GameStarted)
   }
@@ -55,11 +59,10 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
   def getStatusText: String = GameStatus.message(gameStatus)
 
-  def getPlayer1Hand: mutable.Queue[Card] = playingField.getPlayer1Hand
+  def getPlayer1Hand: mutable.Queue[Card] = player1Hand
 
-  def getPlayer2Hand: mutable.Queue[Card] = playingField.getPlayer2Hand
+  def getPlayer2Hand: mutable.Queue[Card] = player2Hand
 
   def getPlayer1Field: mutable.ListBuffer[Card] = playingField.getPlayer1Field
   def getPlayer2Field: mutable.ListBuffer[Card] = playingField.getPlayer2Field
-  
 }

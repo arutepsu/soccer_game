@@ -1,14 +1,11 @@
-import model.*
-
-import scala.io.StdIn
-import aview.*
-import aview.gui.*
+import model._
+import aview.gui._
 import controller.Controller
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 object Main {
+
   val controller = new Controller(
     new PlayingField(
       player1Cards = mutable.Queue.empty,
@@ -16,12 +13,16 @@ object Main {
     )
   )
 
-  val tui = new Tui(controller)
-  val gameGui = new GameGui(controller)
-  gameGui.visible = true
+  def main(args: Array[String]): Unit = {
+    // Initialize the game with default player names
+    val (player1, player2) = initializeGame()
 
-  def initializeGame(username: String): (Player, Player) = {
-    val player1 = Player(username, List.empty)
+    // Launch the GUI
+    new GameGui(controller).main(args)
+  }
+
+  def initializeGame(): (Player, Player) = {
+    val player1 = Player("Player1", List.empty)
     val player2 = Player("CPU", List.empty)
 
     // Create and shuffle the deck
@@ -45,24 +46,9 @@ object Main {
     val updatedPlayer1 = player1.copy(cards = player1Cards.map(_.toString).toList)
     val updatedPlayer2 = player2.copy(cards = player2Cards.map(_.toString).toList)
 
+    // Start the game
     controller.startGame()
-    controller.enterNickname(username)
 
     (updatedPlayer1, updatedPlayer2)
-  }
-
-  def main(args: Array[String]): Unit = {
-    tui.displayWelcomeMessage()
-
-    val username = tui.getUserName
-    val (player1, player2) = initializeGame(username)
-
-    var input = ""
-    while (input != "q") {
-      input = scala.io.StdIn.readLine()
-      tui.processInputLine(input)
-    }
-
-    tui.displayFinalStatus(player1, player2)
   }
 }
