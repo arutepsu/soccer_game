@@ -1,5 +1,3 @@
-package aview.gui
-
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.scene.control._
@@ -7,6 +5,8 @@ import scalafx.scene.layout._
 import scalafx.geometry._
 import controller._
 import model._
+import scalafx.scene.image.Image
+import scalafx.scene.image.ImageView
 import scala.swing.Reactor
 
 class GameGui(controller: Controller) extends JFXApp3 with Reactor {
@@ -16,8 +16,6 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
     val startButton = new Button("Start Game")
     val undoButton = new Button("Undo")
     val redoButton = new Button("Redo")
-    val showPlayer1FieldButton = new Button("Show Player 1 Field")
-    val showPlayer2FieldButton = new Button("Show Player 2 Field")
     val showPlayer1HandButton = new Button("Show Player 1 Hand")
     val showPlayer2HandButton = new Button("Show Player 2 Hand")
     val playButton = new Button("Play Move")
@@ -32,30 +30,38 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       editable = false
     }
 
-    // Panels to display players' hands and fields
-    val player1CardsPanel = new VBox()
-    val player2CardsPanel = new VBox()
-    val player1FieldPanel = new VBox()
-    val player2FieldPanel = new VBox()
-    val player1Label = new Label("Player 1's Cards:")
-    val player2Label = new Label("Player 2's Cards:")
-    val player1FieldLabel = new Label("Player 1's Field:")
-    val player2FieldLabel = new Label("Player 2's Field:")
+    // Panels to display players' hands
+    val player1HandPanel = new VBox()
+    val player2HandPanel = new VBox()
 
-    // Left and Right Panels for Player 1 and Player 2
-    val player1Panel = new VBox {
+    // Panels to display players' fields
+    val player1FieldPanel = new Pane()
+    val player2FieldPanel = new Pane()
+
+    // Separate panels for hand and field
+    val player1HandContainer = new VBox {
       spacing = 10
-      children = Seq(player1Label, player1CardsPanel, player1FieldLabel, player1FieldPanel)
+      children = Seq(player1HandPanel)
     }
 
-    val player2Panel = new VBox {
+    val player2HandContainer = new VBox {
       spacing = 10
-      children = Seq(player2Label, player2CardsPanel, player2FieldLabel, player2FieldPanel)
+      children = Seq(player2HandPanel)
+    }
+
+    val player1FieldContainer = new VBox {
+      spacing = 10
+      children = Seq(player1FieldPanel)
+    }
+
+    val player2FieldContainer = new VBox {
+      spacing = 10
+      children = Seq(player2FieldPanel)
     }
 
     val buttonPanel = new HBox {
       spacing = 10
-      children = Seq(startButton, undoButton, redoButton, showPlayer1FieldButton, showPlayer2FieldButton, showPlayer1HandButton, showPlayer2HandButton, playButton, doStepButton, quitButton)
+      children = Seq(startButton, undoButton, redoButton, showPlayer1HandButton, showPlayer2HandButton, playButton, doStepButton, quitButton)
     }
 
     val nicknamePanel = new HBox {
@@ -73,30 +79,130 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       padding = Insets(20)
       children = Seq(buttonPanel, nicknamePanel, statusPanel, new HBox {
         spacing = 50
-        children = Seq(player1Panel, player2Panel)
+        children = Seq(player1HandContainer, player2HandContainer, player1FieldContainer, player2FieldContainer)
       })
+    }
+
+    val fieldImageView = new ImageView(new Image("file:src/data/field.jpg")) {
+      fitWidth = 800
+      fitHeight = 600
+      preserveRatio = true
+      smooth = true
+    }
+
+    val mainScene = new Scene {
+      root = new StackPane {
+        children = Seq(
+          fieldImageView,
+          mainPanel
+        )
+      }
+    }
+
+    def clearHandPanels(): Unit = {
+      player1HandPanel.children.clear()
+      player2HandPanel.children.clear()
+    }
+
+    def clearFieldPanels(): Unit = {
+      player1FieldPanel.children.clear()
+      player2FieldPanel.children.clear()
+    }
+
+    def updatePlayerHandPanel(panel: VBox, hand: Seq[String], isLeft: Boolean): Unit = {
+      val handBoxes = for (i <- 0 until (hand.length + 5) / 6) yield new HBox {
+        spacing = 10
+      }
+
+      hand.zipWithIndex.foreach { case (card, index) =>
+        val rowIndex = index / 6
+        handBoxes(rowIndex).children.add(new ImageView(new Image(s"file:src/data/cards/$card")) {
+          fitWidth = 50
+          fitHeight = 70
+          preserveRatio = true
+          smooth = true
+        })
+      }
+
+      // Convert handBoxes to a Seq of Node
+      val nodes: Seq[javafx.scene.Node] = handBoxes.map(_.delegate)
+      panel.children.addAll(nodes: _*)
+      panel.alignment = if (isLeft) Pos.TopLeft else Pos.TopRight
+    }
+
+    def updatePlayerFieldPanel(panel: Pane, field: Seq[String]): Unit = {
+      val positions = Seq(
+        (150, 200), (300, 150),
+        (100, 350), (300, 350)
+      )
+
+      panel.children.clear()  // Clear previous field cards
+
+      field.take(4).zip(positions).foreach { case (card, (x, y)) =>
+        val cardImageView = new ImageView(new Image(s"file:src/data/cards/$card")) {
+          fitWidth = 50
+          fitHeight = 70
+          preserveRatio = true
+          smooth = true
+        }
+        cardImageView.layoutX = x
+        cardImageView.layoutY = y
+        panel.children.add(cardImageView)
+      }
+    }
+
+    def placeInitialCards(): Unit = {
+      updatePlayerFieldPanel(player1FieldPanel, controller.getPlayer1Field.map(_.fileName).toSeq)
+      updatePlayerFieldPanel(player2FieldPanel, controller.getPlayer2Field.map(_.fileName).toSeq)
+    }
+
+    val introImageView = new ImageView(new Image("file:src/data/logo.png")) {
+      fitWidth = 400
+      fitHeight = 300
+      preserveRatio = true
+      smooth = true
+    }
+
+    val nicknameScene = new Scene {
+      root = new VBox {
+        spacing = 20
+        padding = Insets(20)
+        alignment = Pos.Center
+        children = Seq(
+          new Label("Welcome to Soccer Game!"),
+          introImageView,
+          nicknamePanel,
+          new Button("Start") {
+            onAction = _ => {
+              val playerName = nicknameField.text.value
+              if (playerName.isEmpty) {
+                new Alert(Alert.AlertType.Error) {
+                  initOwner(stage)
+                  title = "Nickname Missing"
+                  headerText = "Please enter your nickname."
+                }.showAndWait()
+              } else {
+                controller.enterNickname(playerName)
+                controller.startGame()
+                statusline.text = controller.getStatusText
+                stage.scene = mainScene
+                placeInitialCards()
+              }
+            }
+          }
+        )
+      }
     }
 
     stage = new JFXApp3.PrimaryStage {
       title = "Soccer Card Game"
-      scene = new Scene {
-        root = mainPanel
-      }
+      scene = nicknameScene
     }
 
     startButton.onAction = _ => {
-      val playerName = nicknameField.text.value
-      if (playerName.isEmpty) {
-        new Alert(Alert.AlertType.Error) {
-          initOwner(stage)
-          title = "Nickname Missing"
-          headerText = "Please enter your nickname."
-        }.showAndWait()
-      } else {
-        controller.enterNickname(playerName)
-        controller.startGame()
-        statusline.text = controller.getStatusText
-      }
+      controller.startGame()
+      statusline.text = controller.getStatusText
+      placeInitialCards()
     }
 
     undoButton.onAction = _ => {
@@ -109,26 +215,14 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       statusline.text = controller.getStatusText
     }
 
-    showPlayer1FieldButton.onAction = _ => {
-      clearPanels()
-      updatePlayer1FieldPanel()
-      statusline.text = controller.getStatusText
-    }
-
-    showPlayer2FieldButton.onAction = _ => {
-      clearPanels()
-      updatePlayer2FieldPanel()
-      statusline.text = controller.getStatusText
-    }
-
     showPlayer1HandButton.onAction = _ => {
-      clearPanels()
-      updatePlayer1HandPanel()
+      clearHandPanels()
+      updatePlayerHandPanel(player1HandPanel, controller.getPlayer1Hand.map(_.fileName).toSeq, isLeft = false)
     }
 
     showPlayer2HandButton.onAction = _ => {
-      clearPanels()
-      updatePlayer2HandPanel()
+      clearHandPanels()
+      updatePlayerHandPanel(player2HandPanel, controller.getPlayer2Hand.map(_.fileName).toSeq, isLeft = true)
     }
 
     playButton.onAction = _ => {
@@ -145,51 +239,18 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       sys.exit(0)
     }
 
-    def clearPanels(): Unit = {
-      player1CardsPanel.children.clear()
-      player2CardsPanel.children.clear()
-      player1FieldPanel.children.clear()
-      player2FieldPanel.children.clear()
-    }
-
-    def updatePlayer1HandPanel(): Unit = {
-      clearPanels()
-      val player1Hand = controller.getPlayer1Hand.take(22)
-      player1Hand.foreach { card =>
-        player1CardsPanel.children.add(new Label(card.toString))
-      }
-    }
-
-    def updatePlayer2HandPanel(): Unit = {
-      clearPanels()
-      val player2Hand = controller.getPlayer2Hand.take(22)
-      player2Hand.foreach { card =>
-        player2CardsPanel.children.add(new Label(card.toString))
-      }
-    }
-
-    def updatePlayer1FieldPanel(): Unit = {
-      clearPanels()
-      val player1Field = controller.getPlayer1Field.take(4)
-      player1Field.foreach { card =>
-        player1FieldPanel.children.add(new Label(card.toString))
-      }
-    }
-
-    def updatePlayer2FieldPanel(): Unit = {
-      clearPanels()
-      val player2Field = controller.getPlayer2Field.take(4)
-      player2Field.foreach { card =>
-        player2FieldPanel.children.add(new Label(card.toString))
-      }
-    }
-
     // Update GUI based on controller events
     listenTo(controller)
     reactions += {
-      case _: GameStarted => statusline.text = controller.getStatusText
-      case _: GamePlayed => statusline.text = controller.getStatusText
-      case _: FieldUpdated => statusline.text = controller.getStatusText
+      case _: GameStarted =>
+        statusline.text = controller.getStatusText
+        placeInitialCards()
+      case _: GamePlayed =>
+        statusline.text = controller.getStatusText
+      case _: FieldUpdated =>
+        statusline.text = controller.getStatusText
+        updatePlayerFieldPanel(player1FieldPanel, controller.getPlayer1Field.map(_.fileName).toSeq)
+        updatePlayerFieldPanel(player2FieldPanel, controller.getPlayer2Field.map(_.fileName).toSeq)
       case NicknameEntered(nickname) => println(s"Nickname entered: $nickname")
     }
   }

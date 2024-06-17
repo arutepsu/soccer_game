@@ -22,7 +22,7 @@ case class Card(value: CardValue, suit: Suit) {
     case King => "King"
   }
 
-  def valueToInt(value: CardValue) : Int = value match {
+  def valueToInt(value: CardValue): Int = value match {
     case Ace => 14
     case Two => 2
     case Three => 3
@@ -37,7 +37,14 @@ case class Card(value: CardValue, suit: Suit) {
     case Queen => 12
     case King => 13
   }
+
   def compare(card1: CardValue, card2: CardValue): Int = {
     valueToInt(card1) - valueToInt(card2)
+  }
+
+  def fileName: String = {
+    val valueStr = valueToString(value).toLowerCase.replace(" ", "_")
+    val suitStr = Suit.suitToString(suit).toLowerCase
+    s"${valueStr}_of_${suitStr}.png"
   }
 }
