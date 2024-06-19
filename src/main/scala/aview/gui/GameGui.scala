@@ -1,3 +1,5 @@
+package aview.gui
+
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.scene.control._
@@ -8,17 +10,15 @@ import model._
 import scalafx.scene.image.Image
 import scalafx.scene.image.ImageView
 import scala.swing.Reactor
+import scalafx.beans.binding.Bindings
+import scalafx.scene.Node
 
 class GameGui(controller: Controller) extends JFXApp3 with Reactor {
 
   override def start(): Unit = {
 
-    val startButton = new Button("Start Game")
     val undoButton = new Button("Undo")
     val redoButton = new Button("Redo")
-    val showPlayer1HandButton = new Button("Show Player 1 Hand")
-    val showPlayer2HandButton = new Button("Show Player 2 Hand")
-    val playButton = new Button("Play Move")
     val doStepButton = new Button("Do Step")
     val quitButton = new Button("Quit")
     val nicknameField = new TextField {
@@ -30,24 +30,8 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       editable = false
     }
 
-    // Panels to display players' hands
-    val player1HandPanel = new VBox()
-    val player2HandPanel = new VBox()
-
-    // Panels to display players' fields
     val player1FieldPanel = new Pane()
     val player2FieldPanel = new Pane()
-
-    // Separate panels for hand and field
-    val player1HandContainer = new VBox {
-      spacing = 10
-      children = Seq(player1HandPanel)
-    }
-
-    val player2HandContainer = new VBox {
-      spacing = 10
-      children = Seq(player2HandPanel)
-    }
 
     val player1FieldContainer = new VBox {
       spacing = 10
@@ -61,7 +45,7 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
 
     val buttonPanel = new HBox {
       spacing = 10
-      children = Seq(startButton, undoButton, redoButton, showPlayer1HandButton, showPlayer2HandButton, playButton, doStepButton, quitButton)
+      children = Seq(undoButton, redoButton, doStepButton, quitButton)
     }
 
     val nicknamePanel = new HBox {
@@ -79,29 +63,33 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       padding = Insets(20)
       children = Seq(buttonPanel, nicknamePanel, statusPanel, new HBox {
         spacing = 50
-        children = Seq(player1HandContainer, player2HandContainer, player1FieldContainer, player2FieldContainer)
+        children = Seq(player1FieldContainer, player2FieldContainer)
       })
     }
 
     val fieldImageView = new ImageView(new Image("file:src/data/field.jpg")) {
       fitWidth = 800
-      fitHeight = 600
+      fitHeight = 800
       preserveRatio = true
       smooth = true
     }
 
-    val mainScene = new Scene {
-      root = new StackPane {
-        children = Seq(
-          fieldImageView,
-          mainPanel
-        )
+    val fixedPane = new Pane {
+      prefWidth = 800
+      prefHeight = 600
+      children = Seq(fieldImageView, mainPanel)
+
+      layoutBounds.onChange { (_, _, bounds) =>
+        fieldImageView.layoutX = (bounds.getWidth - fieldImageView.fitWidth()) / 2
+        fieldImageView.layoutY = (bounds.getHeight - fieldImageView.fitHeight()) / 2
       }
     }
 
-    def clearHandPanels(): Unit = {
-      player1HandPanel.children.clear()
-      player2HandPanel.children.clear()
+    val mainScene = new Scene {
+      root = new StackPane {
+        children = Seq(fixedPane)
+        StackPane.setAlignment(fixedPane, Pos.Center)
+      }
     }
 
     def clearFieldPanels(): Unit = {
@@ -109,36 +97,9 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       player2FieldPanel.children.clear()
     }
 
-    def updatePlayerHandPanel(panel: VBox, hand: Seq[String], isLeft: Boolean): Unit = {
-      val handBoxes = for (i <- 0 until (hand.length + 5) / 6) yield new HBox {
-        spacing = 10
-      }
-
-      hand.zipWithIndex.foreach { case (card, index) =>
-        val rowIndex = index / 6
-        handBoxes(rowIndex).children.add(new ImageView(new Image(s"file:src/data/cards/$card")) {
-          fitWidth = 50
-          fitHeight = 70
-          preserveRatio = true
-          smooth = true
-        })
-      }
-
-      // Convert handBoxes to a Seq of Node
-      val nodes: Seq[javafx.scene.Node] = handBoxes.map(_.delegate)
-      panel.children.addAll(nodes: _*)
-      panel.alignment = if (isLeft) Pos.TopLeft else Pos.TopRight
-    }
-
-    def updatePlayerFieldPanel(panel: Pane, field: Seq[String]): Unit = {
-      val positions = Seq(
-        (150, 200), (300, 150),
-        (100, 350), (300, 350)
-      )
-
-      panel.children.clear()  // Clear previous field cards
-
-      field.take(4).zip(positions).foreach { case (card, (x, y)) =>
+    def updatePlayerFieldPanel(panel: Pane, field: Seq[String], positions: Seq[(Double, Double)]): Unit = {
+      panel.children.clear()
+      field.zip(positions).foreach { case (card, (x, y)) =>
         val cardImageView = new ImageView(new Image(s"file:src/data/cards/$card")) {
           fitWidth = 50
           fitHeight = 70
@@ -152,8 +113,21 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
     }
 
     def placeInitialCards(): Unit = {
-      updatePlayerFieldPanel(player1FieldPanel, controller.getPlayer1Field.map(_.fileName).toSeq)
-      updatePlayerFieldPanel(player2FieldPanel, controller.getPlayer2Field.map(_.fileName).toSeq)
+      val player1Positions = Seq(
+        (713.0, 50.0),
+        (613.0, 150.0),
+        (713.0, 150.0),
+        (813.0, 150.0)
+      )
+      val player2Positions = Seq(
+        (-198.0, 395.0),
+        (-98.0, 295.0),
+        (-198.0, 295.0),
+        (-298.0, 295.0)
+      )
+
+      updatePlayerFieldPanel(player1FieldPanel, controller.getPlayer1Field.map(_.fileName).toSeq, player1Positions)
+      updatePlayerFieldPanel(player2FieldPanel, controller.getPlayer2Field.map(_.fileName).toSeq, player2Positions)
     }
 
     val introImageView = new ImageView(new Image("file:src/data/logo.png")) {
@@ -199,12 +173,6 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       scene = nicknameScene
     }
 
-    startButton.onAction = _ => {
-      controller.startGame()
-      statusline.text = controller.getStatusText
-      placeInitialCards()
-    }
-
     undoButton.onAction = _ => {
       controller.undo()
       statusline.text = controller.getStatusText
@@ -215,23 +183,8 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       statusline.text = controller.getStatusText
     }
 
-    showPlayer1HandButton.onAction = _ => {
-      clearHandPanels()
-      updatePlayerHandPanel(player1HandPanel, controller.getPlayer1Hand.map(_.fileName).toSeq, isLeft = false)
-    }
-
-    showPlayer2HandButton.onAction = _ => {
-      clearHandPanels()
-      updatePlayerHandPanel(player2HandPanel, controller.getPlayer2Hand.map(_.fileName).toSeq, isLeft = true)
-    }
-
-    playButton.onAction = _ => {
-      controller.playGame(controller.getCurrentPlayerName)
-      statusline.text = controller.getStatusText
-    }
-
     doStepButton.onAction = _ => {
-      controller.doStep()
+      controller.playGame(controller.getCurrentPlayerName)
       statusline.text = controller.getStatusText
     }
 
@@ -239,7 +192,6 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       sys.exit(0)
     }
 
-    // Update GUI based on controller events
     listenTo(controller)
     reactions += {
       case _: GameStarted =>
@@ -249,8 +201,7 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
         statusline.text = controller.getStatusText
       case _: FieldUpdated =>
         statusline.text = controller.getStatusText
-        updatePlayerFieldPanel(player1FieldPanel, controller.getPlayer1Field.map(_.fileName).toSeq)
-        updatePlayerFieldPanel(player2FieldPanel, controller.getPlayer2Field.map(_.fileName).toSeq)
+        placeInitialCards()
       case NicknameEntered(nickname) => println(s"Nickname entered: $nickname")
     }
   }
