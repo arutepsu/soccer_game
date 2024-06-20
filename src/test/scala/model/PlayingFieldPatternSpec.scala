@@ -1,12 +1,15 @@
 package model
 
+import model.CardComponent.{Card, CardComparisonStrategies}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
 import scala.collection.mutable.Queue
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
-import model.Suit._
-import model.CardValue._
+import model.CardComponent.Suit.*
+import model.CardComponent.CardValue.*
+import model.PlayingFieldComponent.PlayingFieldPattern
 
 class PlayingFieldPatternSpec extends AnyWordSpec with Matchers {
   "A PlayingFieldPattern" when {

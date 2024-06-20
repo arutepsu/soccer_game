@@ -12,7 +12,8 @@ import scala.swing.Reactor
 import scalafx.application.Platform
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import controller.GameEvents._
+import controller.controllerComponent.GameEvents._
+import controller.controllerComponent.ControllerBaseImpl._
 
 class GameGui(controller: Controller) extends JFXApp3 with Reactor {
 
@@ -213,13 +214,13 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       }
     }
 
-    doStepButton.onAction = _ => {
-      controller.doStep()
-      Platform.runLater {
-        statusline.text = controller.getStatusText
-        placeInitialCards() // Update the fields after step
-      }
-    }
+//    doStepButton.onAction = _ => {
+//      controller.doStep()
+//      Platform.runLater {
+//        statusline.text = controller.getStatusText
+//        placeInitialCards() // Update the fields after step
+//      }
+//    }
 
     attackButton.onAction = _ => {
       Future {
@@ -256,4 +257,3 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
     }
   }
 }
-

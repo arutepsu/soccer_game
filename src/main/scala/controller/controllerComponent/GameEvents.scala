@@ -1,4 +1,4 @@
-package controller
+package controller.controllerComponent
 
 import scala.swing.event.Event
 

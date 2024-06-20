@@ -1,6 +1,9 @@
-import model._
-import aview.gui._
-import controller.Controller
+import model.*
+import aview.gui.*
+import controller.controllerComponent.ControllerBaseImpl.Controller
+import model.CardComponent.{Card, CardDeck}
+import model.PlayerComponent.Player
+import model.PlayingFieldComponent.PlayingField
 
 import scala.collection.mutable
 

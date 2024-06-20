@@ -1,4 +1,6 @@
-package controller
+package controller.controllerComponent.ControllerBaseImpl
+
+import controller.controllerComponent.ControllerBaseImpl.Controller
 import util.Command
 
 class SetCommand(controller: Controller) extends Command {

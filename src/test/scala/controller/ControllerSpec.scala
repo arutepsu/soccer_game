@@ -1,12 +1,17 @@
 package controller
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import model.{PlayingField, Card}
-import util.{UndoManager, Command}
-import scala.collection.mutable
 
+import controller.controllerComponent.ControllerBaseImpl.Controller
+import controller.controllerComponent.GameStatus
+import model.CardComponent.Card
+import model.PlayingFieldComponent.PlayingField
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import util.{Command, UndoManager}
+
+import scala.collection.mutable
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
+
 import scala.collection.mutable
 
 class ControllerSpec extends AnyWordSpec with Matchers {

@@ -1,10 +1,13 @@
 package aview
 
-import controller._
-import model._
+import controller.*
+import model.*
+
 import scala.swing.Reactor
 import scala.io.StdIn.readLine
-import controller.GameEvents._
+import controller.controllerComponent.GameEvents.*
+import controller.controllerComponent.ControllerBaseImpl.Controller
+import model.PlayerComponent.Player
 
 class Tui(controller: Controller) extends Reactor {
 
@@ -44,7 +47,7 @@ class Tui(controller: Controller) extends Reactor {
         controller.startGame()
       case "u" => controller.undo()
       case "r" => controller.redo()
-      case "d" => controller.doStep()
+//      case "d" => controller.doStep()
     }
   }
 

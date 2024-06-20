@@ -1,10 +1,12 @@
-package model
-import scala.collection.mutable.Queue
-import CardValue._
-import Suit._
-import Card._
+package model.CardComponent
+
+import model.CardComponent.Card
+import model.CardComponent.Card.*
+import model.CardComponent.CardValue.*
+import Suit.{Clubs, Diamonds, Hearts, Spades}
 
 import scala.collection.mutable
+import scala.collection.mutable.Queue
 import scala.util.Random
 
 object CardDeck {

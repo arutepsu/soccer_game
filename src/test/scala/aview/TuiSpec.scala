@@ -1,7 +1,9 @@
 package aview
 
-import controller._
-import model.{Player, PlayingField}
+import controller.*
+import controller.controllerComponent.ControllerBaseImpl.Controller
+import model.PlayerComponent.Player
+import model.PlayingFieldComponent.PlayingField
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

@@ -1,7 +1,8 @@
 package model
 
 import org.scalatest.wordspec.AnyWordSpec
-import model._
+import model.*
+import model.CardComponent.{Card, CardComparisonStrategies, CardValue, Suit}
 
 
 class CardComparisonStrategiesSpec extends AnyWordSpec {

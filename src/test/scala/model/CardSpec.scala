@@ -1,7 +1,8 @@
 package model
 
-import model.CardValue._
-import model.Suit.Suit
+import model.CardComponent.{Card, Suit}
+import model.CardComponent.CardValue.*
+import model.CardComponent.Suit.Suit
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 

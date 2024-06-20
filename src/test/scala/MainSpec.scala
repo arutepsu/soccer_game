@@ -3,9 +3,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.BeforeAndAfter
 import java.io.{ByteArrayOutputStream, StringReader}
 import java.nio.charset.StandardCharsets
-import model.{Card, Player, PlayingField, CardDeck}
-import controller.Controller
 import aview.Tui
+import controller.controllerComponent.ControllerBaseImpl.Controller
+import model.CardComponent.{Card, CardDeck}
+import model.PlayerComponent.Player
+import model.PlayingFieldComponent.PlayingField
 
 import scala.collection.mutable
 import scala.compiletime.uninitialized

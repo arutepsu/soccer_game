@@ -1,8 +1,10 @@
 package controller
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
-import model.{PlayingField, *}
+import model.*
 import controller.*
+import controller.controllerComponent.ControllerBaseImpl.{Controller, SetCommand}
+import model.PlayingFieldComponent.PlayingField
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
 

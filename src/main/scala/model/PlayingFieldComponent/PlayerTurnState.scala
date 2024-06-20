@@ -1,10 +1,12 @@
-package model
-import scala.collection.mutable.Queue
-import scala.collection.mutable.ListBuffer
+package model.PlayingFieldComponent
+
+import model.CardComponent.Card
+
 import scala.collection.mutable
+import scala.collection.mutable.{ListBuffer, Queue}
 import scala.io.StdIn
 
-object PlayerTurnState extends model.PlayingFieldState {
+object PlayerTurnState extends PlayingFieldState {
   override def handle(player1Hand: mutable.Queue[Card], player2Hand: mutable.Queue[Card], player1Field: ListBuffer[Card], player2Field: ListBuffer[Card]): Unit = {
     // Display current game
     display(player1Hand, player1Field, player2Hand, player2Field)

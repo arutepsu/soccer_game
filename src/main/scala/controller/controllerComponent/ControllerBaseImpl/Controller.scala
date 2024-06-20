@@ -1,12 +1,14 @@
-package controller
+package controller.controllerComponent.ControllerBaseImpl
 
-import model.{Card, PlayingField}
+import controller.controllerComponent.GameEvents.*
+import controller.controllerComponent.GameStatus
+import model.CardComponent.Card
+import model.PlayingFieldComponent.PlayingField
 import util.{Command, UndoManager}
 
 import scala.collection.mutable
 import scala.swing.Publisher
 import scala.swing.event.Event
-import controller.GameEvents._
 
 class Controller(var playingField: PlayingField) extends Publisher {
 
@@ -23,12 +25,13 @@ class Controller(var playingField: PlayingField) extends Publisher {
     player2Hand = playingField.getPlayer2Hand.take(26)
     playingField.fieldPrepare(player1Hand, playingField.getPlayer1Field)
     playingField.fieldPrepare(player2Hand, playingField.getPlayer2Field)
-    gameStatus = GameStatus.NOT_FINISH
+    gameStatus = GameStatus.STARTED
     publish(new GameStarted)
   }
 
   def playGame(player1Name: String, player2Name: String): Unit = {
     playingField.playGame()
+    gameStatus = GameStatus.RUNNING
     publish(GamePlayed(player1Name, player2Name))
   }
 
@@ -37,18 +40,20 @@ class Controller(var playingField: PlayingField) extends Publisher {
     publish(new FieldUpdated)
   }
 
-  def doStep(): Unit = {
-    undoManager.undoStep
+  def doStep(command: Command): Unit = {
+    undoManager.doStep(command)
     publish(new FieldUpdated)
   }
 
   def undo(): Unit = {
     undoManager.undoStep
+    gameStatus = GameStatus.UNDO
     publish(new FieldUpdated)
   }
 
   def redo(): Unit = {
     undoManager.redoStep
+    gameStatus= GameStatus.REDO
     publish(new FieldUpdated)
   }
 

@@ -1,7 +1,8 @@
-package model
+package model.CardComponent
 
-object CardObject {
+object CardValue {
   sealed trait CardValue
+
   case object Ace extends CardValue
   case object Two extends CardValue
   case object Three extends CardValue
@@ -16,4 +17,11 @@ object CardObject {
   case object Queen extends CardValue
   case object King extends CardValue
 
+  // Define a custom ordering for CardValue
+  implicit val cardValueOrdering: Ordering[CardValue] = new Ordering[CardValue] {
+    override def compare(x: CardValue, y: CardValue): Int = {
+      val values = List(Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King)
+      values.indexOf(x) - values.indexOf(y)
+    }
+  }
 }

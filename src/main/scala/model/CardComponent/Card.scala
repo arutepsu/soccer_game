@@ -1,7 +1,7 @@
-package model
+package model.CardComponent
 
-import model.CardValue._
-import model.Suit.Suit
+import model.CardComponent.CardValue.*
+import Suit.Suit
 
 case class Card(value: CardValue, suit: Suit) {
   override def toString: String = s"${valueToString(value)} of ${Suit.suitToString(suit)}"

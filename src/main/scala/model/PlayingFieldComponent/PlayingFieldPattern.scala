@@ -1,8 +1,10 @@
-package model
+package model.PlayingFieldComponent
 
-import scala.collection.mutable.Queue
-import scala.collection.mutable.ListBuffer
+import model.CardComponent.{Card, CardComparisonStrategies, ComparisonStrategy}
+import model.*
+
 import scala.collection.mutable
+import scala.collection.mutable.{ListBuffer, Queue}
 import scala.io.StdIn
 
 class PlayingFieldPattern(player1Cards: mutable.Queue[Card], player2Cards: mutable.Queue[Card]) {

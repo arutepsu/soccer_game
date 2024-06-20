@@ -1,5 +1,4 @@
-package model
-
+package model.CardComponent
 
 object Suit {
   sealed trait Suit

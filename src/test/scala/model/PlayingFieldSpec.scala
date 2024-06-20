@@ -1,6 +1,8 @@
 package model
 
-import model._
+import model.*
+import model.CardComponent.{Card, CardValue, Suit}
+import model.PlayingFieldComponent.PlayingField
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 

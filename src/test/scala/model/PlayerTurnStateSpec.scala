@@ -1,8 +1,11 @@
 package model
 
-import model._
+import model.*
+import model.CardComponent.{Card, CardValue, Suit}
+import model.PlayingFieldComponent.PlayerTurnState
 import org.scalatest.wordspec.AnyWordSpec
-import scala.collection.mutable.{Queue, ListBuffer}
+
+import scala.collection.mutable.{ListBuffer, Queue}
 
 class PlayerTurnStateSpec extends AnyWordSpec {
 

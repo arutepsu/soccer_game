@@ -1,10 +1,12 @@
-package model
+package model.PlayingFieldComponent
 
-import scala.collection.mutable.{Queue, ListBuffer}
-import scala.util.{Try, Success, Failure}
-import CardObject._
-import CardDeck._
+import model.CardComponent.CardDeck.*
+import model.CardComponent.CardObject.*
+import model.CardComponent.{Card, CardDeck}
+
 import scala.collection.mutable
+import scala.collection.mutable.{ListBuffer, Queue}
+import scala.util.{Failure, Success, Try}
 
 class PlayingField(private var player1Cards: mutable.Queue[Card], private var player2Cards: mutable.Queue[Card]) {
   var player1Hand: mutable.Queue[Card] = player1Cards.clone()

@@ -2,10 +2,15 @@ package aview.gui
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import scala.swing._
-import scala.swing.event._
-import controller._
-import model._
+
+import scala.swing.*
+import scala.swing.event.*
+import controller.*
+import controller.controllerComponent.ControllerBaseImpl.Controller
+import model.*
+import model.CardComponent.{Card, CardValue, Suit}
+import model.PlayingFieldComponent.PlayingField
+
 import scala.collection.mutable.Queue
 import scala.collection.mutable
 import javax.swing.SwingUtilities

@@ -1,7 +1,9 @@
 package model
 
+import model.CardComponent.Card
 import org.scalatest.wordspec.AnyWordSpec
-import scala.collection.mutable.{Queue, ListBuffer}
+
+import scala.collection.mutable.{ListBuffer, Queue}
 
 class GameOverStateSpec extends AnyWordSpec {
   "GameOverState" should {
