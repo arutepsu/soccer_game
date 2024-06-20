@@ -24,7 +24,6 @@ class PlayingField(private var player1Cards: mutable.Queue[Card], private var pl
     Try {
       val deck = CardDeck.createStandardDeck()
       CardDeck.shuffleDeck(deck)
-
       assert(deck.size == 52, s"Deck size is ${deck.size}, expected 52")
 
       player1Hand.clear()
@@ -69,7 +68,6 @@ class PlayingField(private var player1Cards: mutable.Queue[Card], private var pl
       val goalkeeper = playerHand.maxBy(card => card.valueToInt(card.value))
       playerHand.dequeueFirst(_ == goalkeeper)
       playerField += goalkeeper
-
       for (_ <- 1 to 3) {
         val defender = playerHand.dequeue()
         playerField += defender
@@ -99,7 +97,6 @@ class PlayingField(private var player1Cards: mutable.Queue[Card], private var pl
         println("Attacker has no cards left to draw.")
         Failure(new Exception("No cards left"))
       }
-
       val attackerCard = attackerHand.dequeue()
       if (defenderField.isDefinedAt(position)) {
         val defenderCard = defenderField(position)
@@ -123,7 +120,7 @@ class PlayingField(private var player1Cards: mutable.Queue[Card], private var pl
           println(s"Draw: $attackerCard vs $defenderCard")
           attackerHand.enqueue(attackerCard)
           defenderHand.enqueue(defenderCard)
-          Success(true)
+          Success(false)
         }
       } else {
         throw new Exception("Invalid position.")
@@ -201,9 +198,16 @@ class PlayingField(private var player1Cards: mutable.Queue[Card], private var pl
           }
         }
 
-        // Switch players and refill the defender's field
+        // Switch players
         currentPlayer = if (currentPlayer == 1) 2 else 1
-        refillField(defenderHand, defenderField)
+//----------------------------------------------------
+        // Refill the new defender's field
+        val (_, newDefenderHand, _, newDefenderField) = currentPlayer match {
+          case 1 => (player1Hand, player2Hand, player1Field, player2Field)
+          case 2 => (player2Hand, player1Hand, player2Field, player1Field)
+        }
+        //________________
+        refillField(newDefenderHand, newDefenderField)
 
         if (player1Hand.isEmpty || player2Hand.isEmpty) {
           gameOver = true

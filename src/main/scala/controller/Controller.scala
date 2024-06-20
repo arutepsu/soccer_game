@@ -6,12 +6,14 @@ import util.{Command, UndoManager}
 import scala.collection.mutable
 import scala.swing.Publisher
 import scala.swing.event.Event
+import controller.GameEvents._
 
 class Controller(var playingField: PlayingField) extends Publisher {
 
   var gameStatus: GameStatus.Value = GameStatus.IDLE
   private val undoManager = new UndoManager
-  private var currentPlayerName: String = ""
+  private var currentPlayer1Name: String = ""
+  private var currentPlayer2Name: String = ""
   private var player1Hand: mutable.Queue[Card] = mutable.Queue.empty[Card]
   private var player2Hand: mutable.Queue[Card] = mutable.Queue.empty[Card]
 
@@ -25,9 +27,9 @@ class Controller(var playingField: PlayingField) extends Publisher {
     publish(new GameStarted)
   }
 
-  def playGame(playerName: String): Unit = {
+  def playGame(player1Name: String, player2Name: String): Unit = {
     playingField.playGame()
-    publish(GamePlayed(playerName))
+    publish(GamePlayed(player1Name, player2Name))
   }
 
   def showMe(): Unit = {
@@ -50,12 +52,14 @@ class Controller(var playingField: PlayingField) extends Publisher {
     publish(new FieldUpdated)
   }
 
-  def enterNickname(nickname: String): Unit = {
-    currentPlayerName = nickname
-    publish(NicknameEntered(nickname))
+  def enterNicknames(nickname1: String, nickname2: String): Unit = {
+    currentPlayer1Name = nickname1
+    currentPlayer2Name = nickname2
+    publish(NicknamesEntered(nickname1, nickname2))
   }
 
-  def getCurrentPlayerName: String = currentPlayerName
+  def getCurrentPlayer1Name: String = currentPlayer1Name
+  def getCurrentPlayer2Name: String = currentPlayer2Name
 
   def getStatusText: String = GameStatus.message(gameStatus)
 

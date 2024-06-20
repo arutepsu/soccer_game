@@ -4,6 +4,7 @@ import controller._
 import model._
 import scala.swing.Reactor
 import scala.io.StdIn.readLine
+import controller.GameEvents._
 
 class Tui(controller: Controller) extends Reactor {
 
@@ -13,8 +14,13 @@ class Tui(controller: Controller) extends Reactor {
     println("Welcome to the Soccer Card Game !!!")
   }
 
-  def getUserName: String = {
-    println("\nEnter your name:")
+  private def getUser1Name: String = {
+    println("\nEnter Player1 name:")
+    readLine()
+  }
+
+  private def getUser2Name: String = {
+    println("\nEnter Player2 name:")
     readLine()
   }
 
@@ -30,15 +36,15 @@ class Tui(controller: Controller) extends Reactor {
     input match {
       case "q" =>
       case "show" => controller.showMe()
-      case "p" => controller.playGame("PlayerName") // Replace "PlayerName" with actual player name if needed
+      case "p" => controller.playGame(controller.getCurrentPlayer1Name, controller.getCurrentPlayer2Name)
       case "s" =>
-        val playerName = getUserName
+        val player1Name = getUser1Name
+        val player2Name = getUser2Name
+        controller.enterNicknames(player1Name, player2Name)
         controller.startGame()
-        controller.enterNickname(playerName)
       case "u" => controller.undo()
       case "r" => controller.redo()
       case "d" => controller.doStep()
-      case name: String => controller.enterNickname(name) // To handle name input
     }
   }
 
@@ -46,10 +52,10 @@ class Tui(controller: Controller) extends Reactor {
     case _: GameStarted => println("Game has started!")
     case _: GamePlayed => println("A move has been played!")
     case _: FieldUpdated => println("The field has been updated!")
-    case NicknameEntered(nickname) => println(s"Nickname entered: $nickname")
+    case NicknamesEntered(nickname1, nickname2) => println(s"Nicknames entered: $nickname1, $nickname2")
   }
 
-  def printStatus: Unit = {
+  def printStatus(): Unit = {
     println(controller.getStatusText)
   }
 }

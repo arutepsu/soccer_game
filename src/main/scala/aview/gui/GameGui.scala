@@ -6,12 +6,13 @@ import scalafx.scene.control._
 import scalafx.scene.layout._
 import scalafx.geometry._
 import controller._
-import model._
 import scalafx.scene.image.Image
 import scalafx.scene.image.ImageView
 import scala.swing.Reactor
-import scalafx.beans.binding.Bindings
-import scalafx.scene.Node
+import scalafx.application.Platform
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import controller.GameEvents._
 
 class GameGui(controller: Controller) extends JFXApp3 with Reactor {
 
@@ -20,11 +21,18 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
     val undoButton = new Button("Undo")
     val redoButton = new Button("Redo")
     val doStepButton = new Button("Do Step")
+    val attackButton = new Button("Attack")
     val quitButton = new Button("Quit")
-    val nicknameField = new TextField {
-      promptText = "Enter Your Nickname"
+    val nicknameField1 = new TextField {
+      promptText = "Enter Player 1 Nickname"
     }
-    val nicknameLabel = new Label("Enter Your Nickname:")
+    val nicknameLabel1 = new Label("Enter Player 1 Nickname:")
+
+    val nicknameField2 = new TextField {
+      promptText = "Enter Player 2 Nickname"
+    }
+    val nicknameLabel2 = new Label("Enter Player 2 Nickname:")
+
     val statusline = new TextField {
       text = controller.getStatusText
       editable = false
@@ -45,12 +53,21 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
 
     val buttonPanel = new HBox {
       spacing = 10
-      children = Seq(undoButton, redoButton, doStepButton, quitButton)
+      children = Seq(undoButton, redoButton, doStepButton, attackButton, quitButton)
     }
 
-    val nicknamePanel = new HBox {
+    val nicknamePanel = new VBox {
       spacing = 10
-      children = Seq(nicknameLabel, nicknameField)
+      children = Seq(
+        new HBox {
+          spacing = 10
+          children = Seq(nicknameLabel1, nicknameField1)
+        },
+        new HBox {
+          spacing = 10
+          children = Seq(nicknameLabel2, nicknameField2)
+        }
+      )
     }
 
     val statusPanel = new HBox {
@@ -97,8 +114,13 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       player2FieldPanel.children.clear()
     }
 
-    def updatePlayerFieldPanel(panel: Pane, field: Seq[String], positions: Seq[(Double, Double)]): Unit = {
+    def updatePlayerFieldPanel(panel: Pane, field: Seq[String], positions: Seq[(Double, Double)], nickname: String): Unit = {
       panel.children.clear()
+      val nicknameLabel = new Label(nickname) {
+        layoutX = 0
+        layoutY = 0
+      }
+      panel.children.add(nicknameLabel)
       field.zip(positions).foreach { case (card, (x, y)) =>
         val cardImageView = new ImageView(new Image(s"file:src/data/cards/$card")) {
           fitWidth = 50
@@ -126,8 +148,8 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
         (-298.0, 295.0)
       )
 
-      updatePlayerFieldPanel(player1FieldPanel, controller.getPlayer1Field.map(_.fileName).toSeq, player1Positions)
-      updatePlayerFieldPanel(player2FieldPanel, controller.getPlayer2Field.map(_.fileName).toSeq, player2Positions)
+      updatePlayerFieldPanel(player1FieldPanel, controller.getPlayer1Field.map(_.fileName).toSeq, player1Positions, controller.getCurrentPlayer1Name)
+      updatePlayerFieldPanel(player2FieldPanel, controller.getPlayer2Field.map(_.fileName).toSeq, player2Positions, controller.getCurrentPlayer2Name)
     }
 
     val introImageView = new ImageView(new Image("file:src/data/logo.png")) {
@@ -148,15 +170,16 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
           nicknamePanel,
           new Button("Start") {
             onAction = _ => {
-              val playerName = nicknameField.text.value
-              if (playerName.isEmpty) {
+              val playerName1 = nicknameField1.text.value
+              val playerName2 = nicknameField2.text.value
+              if (playerName1.isEmpty || playerName2.isEmpty) {
                 new Alert(Alert.AlertType.Error) {
                   initOwner(stage)
                   title = "Nickname Missing"
-                  headerText = "Please enter your nickname."
+                  headerText = "Please enter nicknames for both players."
                 }.showAndWait()
               } else {
-                controller.enterNickname(playerName)
+                controller.enterNicknames(playerName1, playerName2)
                 controller.startGame()
                 statusline.text = controller.getStatusText
                 stage.scene = mainScene
@@ -171,21 +194,41 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
     stage = new JFXApp3.PrimaryStage {
       title = "Soccer Card Game"
       scene = nicknameScene
+      icons.add(new Image("file:src/data/logo.png"))
     }
 
     undoButton.onAction = _ => {
       controller.undo()
-      statusline.text = controller.getStatusText
+      Platform.runLater {
+        statusline.text = controller.getStatusText
+        placeInitialCards() // Update the fields after undo
+      }
     }
 
     redoButton.onAction = _ => {
       controller.redo()
-      statusline.text = controller.getStatusText
+      Platform.runLater {
+        statusline.text = controller.getStatusText
+        placeInitialCards() // Update the fields after redo
+      }
     }
 
     doStepButton.onAction = _ => {
-      controller.playGame(controller.getCurrentPlayerName)
-      statusline.text = controller.getStatusText
+      controller.doStep()
+      Platform.runLater {
+        statusline.text = controller.getStatusText
+        placeInitialCards() // Update the fields after step
+      }
+    }
+
+    attackButton.onAction = _ => {
+      Future {
+        controller.playGame(controller.getCurrentPlayer1Name, controller.getCurrentPlayer2Name)
+        Platform.runLater {
+          statusline.text = controller.getStatusText
+          placeInitialCards() // Update the fields after attack
+        }
+      }
     }
 
     quitButton.onAction = _ => {
@@ -195,14 +238,22 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
     listenTo(controller)
     reactions += {
       case _: GameStarted =>
-        statusline.text = controller.getStatusText
-        placeInitialCards()
+        Platform.runLater {
+          statusline.text = controller.getStatusText
+          placeInitialCards()
+        }
       case _: GamePlayed =>
-        statusline.text = controller.getStatusText
+        Platform.runLater {
+          statusline.text = controller.getStatusText
+        }
       case _: FieldUpdated =>
-        statusline.text = controller.getStatusText
-        placeInitialCards()
-      case NicknameEntered(nickname) => println(s"Nickname entered: $nickname")
+        Platform.runLater {
+          statusline.text = controller.getStatusText
+          placeInitialCards() // Update the fields after field update
+        }
+      case NicknamesEntered(nickname1, nickname2) =>
+        println(s"Nicknames entered: Player 1: $nickname1, Player 2: $nickname2")
     }
   }
 }
+
