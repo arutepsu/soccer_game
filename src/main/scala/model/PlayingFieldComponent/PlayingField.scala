@@ -83,12 +83,12 @@ class PlayingField(private var player1Cards: mutable.Queue[Card], private var pl
   def display(): Unit = {
     println("Player 1's hand:")
     println(player1Hand.count(_ => true))
-    player1Hand.foreach(println)
+//    player1Hand.foreach(println)
     println("\nPlayer 1's field:")
     player1Field.foreach(println)
     println("\nPlayer 2's hand:")
     println(player2Hand.count(_ => true))
-    player2Hand.foreach(println)
+//    player2Hand.foreach(println)
     println("\nPlayer 2's field:")
     player2Field.foreach(println)
   }
@@ -102,6 +102,6 @@ class PlayingField(private var player1Cards: mutable.Queue[Card], private var pl
     playerField ++= sortedField
   }
   def playGame(): Unit = {
-    
+
   }
 }

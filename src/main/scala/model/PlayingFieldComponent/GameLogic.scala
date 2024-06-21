@@ -19,34 +19,42 @@ class GameLogic(private val playingField: PlayingField) {
       if (attackerHand.isEmpty) {
         println("Attacker has no cards left to draw.")
         Failure(new Exception("No cards left"))
-      }
-      val attackerCard = attackerHand.dequeue()
-      if (defenderField.isDefinedAt(position)) {
-        val defenderCard = defenderField(position)
-        val comparison = attackerCard.compare(attackerCard.value, defenderCard.value)
-        if (comparison > 0) {
-          println(s"Attacker wins: $attackerCard vs $defenderCard")
-          attackerHand.enqueue(attackerCard)
-          attackerHand.enqueue(defenderCard)
-          defenderField.remove(position)
-          Success(true)
-        } else if (comparison < 0) {
-          println(s"Defender wins: $attackerCard vs $defenderCard")
-          defenderHand.enqueue(attackerCard)
-          defenderHand.enqueue(defenderCard)
-          defenderField.remove(position)
-          if (defenderHand.nonEmpty) {
-            defenderField.insert(position, defenderHand.dequeue())
-          }
-          Success(false)
-        } else {
-          println(s"Draw: $attackerCard vs $defenderCard")
-          attackerHand.enqueue(attackerCard)
-          defenderHand.enqueue(defenderCard)
-          Success(false)
-        }
       } else {
-        throw new Exception("Invalid position.")
+        val attackerCard = attackerHand.dequeue()
+        if (defenderField.isDefinedAt(position)) {
+          val defenderCard = defenderField(position)
+          val comparison = attackerCard.compare(attackerCard.value, defenderCard.value)
+          if (comparison > 0) {
+            println(s"Attacker wins: $attackerCard vs $defenderCard")
+            attackerHand.enqueue(attackerCard)
+            attackerHand.enqueue(defenderCard)
+            defenderField.remove(position)
+            if (defenderField.isEmpty) {
+              println(s"Attacker scores!$playingField.")
+            }
+            Success(true)
+          } else if (comparison < 0) {
+            println(s"Defender wins: $attackerCard vs $defenderCard")
+            defenderHand.enqueue(attackerCard)
+            defenderHand.enqueue(defenderCard)
+            defenderField.remove(position)
+            if (defenderHand.nonEmpty) {
+              defenderField.insert(position, defenderHand.dequeue())
+            }
+            Success(false)
+          } else {
+            println(s"Draw: $attackerCard vs $defenderCard")
+            attackerHand.enqueue(attackerCard)
+            defenderHand.enqueue(defenderCard)
+            defenderField.remove(position)
+            if (defenderHand.nonEmpty) {
+              defenderField.insert(position, defenderHand.dequeue())
+            }
+            Success(false)
+          }
+        } else {
+          throw new Exception("Invalid position.")
+        }
       }
     }.flatten
   }

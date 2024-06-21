@@ -39,7 +39,13 @@ case class Card(value: CardValue, suit: Suit) {
   }
 
   def compare(card1: CardValue, card2: CardValue): Int = {
-    valueToInt(card1) - valueToInt(card2)
+    if (card1 == Two && card2 == Ace) {
+      1
+    } else if (card1 == Ace && card2 == Two) {
+      -1
+    } else {
+      valueToInt(card1) - valueToInt(card2)
+    }
   }
 
   def fileName: String = {

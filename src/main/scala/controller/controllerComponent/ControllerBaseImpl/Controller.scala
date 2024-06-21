@@ -10,10 +10,12 @@ import util.{Command, UndoManager}
 import scala.collection.mutable
 import scala.swing.Publisher
 import scala.swing.event.Event
+import aview.Tui
 
 class Controller(var playingField: PlayingField) extends Publisher {
   var gamelogic = new GameLogic(playingField)
   var gameStatus: GameStatus.Value = GameStatus.IDLE
+  var attackPosition = 0;
   private val undoManager = new UndoManager
   private var currentPlayer1Name: String = ""
   private var currentPlayer2Name: String = ""
@@ -62,6 +64,10 @@ class Controller(var playingField: PlayingField) extends Publisher {
     currentPlayer1Name = nickname1
     currentPlayer2Name = nickname2
     publish(NicknamesEntered(nickname1, nickname2))
+  }
+  def enterAttackPosition(int: Int): Unit = {
+    attackPosition = int
+    publish(AttackingPositionEntered(int))
   }
   def quit(): Unit = {
     gameStatus=GameStatus.ENDED
