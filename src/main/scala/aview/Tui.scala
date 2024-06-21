@@ -17,12 +17,12 @@ class Tui(controller: Controller) extends Reactor {
     println("Welcome to the Soccer Card Game !!!")
   }
 
-  private def getUser1Name: String = {
+  def getUser1Name: String = {
     println("\nEnter Player1 name:")
     readLine()
   }
 
-  private def getUser2Name: String = {
+  def getUser2Name: String = {
     println("\nEnter Player2 name:")
     readLine()
   }
@@ -35,19 +35,13 @@ class Tui(controller: Controller) extends Reactor {
     println(player2)
   }
 
-  def processInputLine(input: String): Unit = {
+  def processInputLine(input: String, currentPlayer: String): Unit = {
     input match {
-      case "q" =>
-      case "show" => controller.showMe()
-      case "p" => controller.playGame(controller.getCurrentPlayer1Name, controller.getCurrentPlayer2Name)
-      case "s" =>
-        val player1Name = getUser1Name
-        val player2Name = getUser2Name
-        controller.enterNicknames(player1Name, player2Name)
-        controller.startGame()
+      case "q" => controller.quit()
+      case "a" => controller.playGame(controller.getCurrentPlayer1Name, controller.getCurrentPlayer2Name)
       case "u" => controller.undo()
       case "r" => controller.redo()
-//      case "d" => controller.doStep()
+      case _ => println("Invalid input. Please enter 'a' to attack, 'r' to redo, 'u' to undo, or 'q' to quit.")
     }
   }
 

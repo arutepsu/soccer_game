@@ -47,4 +47,5 @@ case class Card(value: CardValue, suit: Suit) {
     val suitStr = Suit.suitToString(suit).toLowerCase
     s"${valueStr}_of_${suitStr}.png"
   }
+  
 }

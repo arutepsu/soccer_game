@@ -214,13 +214,13 @@ class GameGui(controller: Controller) extends JFXApp3 with Reactor {
       }
     }
 
-//    doStepButton.onAction = _ => {
-//      controller.doStep()
-//      Platform.runLater {
-//        statusline.text = controller.getStatusText
-//        placeInitialCards() // Update the fields after step
-//      }
-//    }
+    //    doStepButton.onAction = _ => {
+    //      controller.doStep()
+    //      Platform.runLater {
+    //        statusline.text = controller.getStatusText
+    //        placeInitialCards() // Update the fields after step
+    //      }
+    //    }
 
     attackButton.onAction = _ => {
       Future {

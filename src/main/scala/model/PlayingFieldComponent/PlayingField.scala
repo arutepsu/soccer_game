@@ -93,140 +93,15 @@ class PlayingField(private var player1Cards: mutable.Queue[Card], private var pl
     player2Field.foreach(println)
   }
 
-  def attack(attackerHand: mutable.Queue[Card], defenderHand: mutable.Queue[Card], defenderField: ListBuffer[Card], position: Int): Try[Boolean] = {
-    Try {
-      if (attackerHand.isEmpty) {
-        println("Attacker has no cards left to draw.")
-        Failure(new Exception("No cards left"))
-      }
-      val attackerCard = attackerHand.dequeue()
-      if (defenderField.isDefinedAt(position)) {
-        val defenderCard = defenderField(position)
-        val comparison = attackerCard.compare(attackerCard.value, defenderCard.value)
-        if (comparison > 0) {
-          println(s"Attacker wins: $attackerCard vs $defenderCard")
-          attackerHand.enqueue(attackerCard)
-          attackerHand.enqueue(defenderCard)
-          defenderField.remove(position)
-          Success(true)
-        } else if (comparison < 0) {
-          println(s"Defender wins: $attackerCard vs $defenderCard")
-          defenderHand.enqueue(attackerCard)
-          defenderHand.enqueue(defenderCard)
-          defenderField.remove(position)
-          if (defenderHand.nonEmpty) {
-            defenderField.insert(position, defenderHand.dequeue())
-          }
-          Success(false)
-        } else {
-          println(s"Draw: $attackerCard vs $defenderCard")
-          attackerHand.enqueue(attackerCard)
-          defenderHand.enqueue(defenderCard)
-          Success(false)
-        }
-      } else {
-        throw new Exception("Invalid position.")
-      }
-    }.flatten
-  }
-
-  def drawCard(playerHand: mutable.Queue[Card]): Option[Card] = {
-    if (playerHand.nonEmpty) {
-      Some(playerHand.dequeue())
-    } else {
-      None
-    }
-  }
-
-  def playGame(): Unit = {
-    var currentPlayer = 1
-    var gameOver = false
-
-    while (!gameOver) {
-      val (attackerHand, defenderHand, attackerField, defenderField) = currentPlayer match {
-        case 1 => (player1Hand, player2Hand, player1Field, player2Field)
-        case 2 => (player2Hand, player1Hand, player2Field, player1Field)
-      }
-
-      if (attackerHand.isEmpty || defenderHand.isEmpty) {
-        println(s"Player $currentPlayer has no cards left in hand.")
-        gameOver = true
-      } else {
-        display()
-
-        var continueAttacking = true
-        while (continueAttacking && attackerHand.nonEmpty) {
-          println(s"Player $currentPlayer's turn to attack.")
-          println(s"Card to be used for attack: ${attackerHand.head}")
-
-          // Display valid positions to attack
-          println("Choose position to attack:")
-          if (defenderField.size == 1) {
-            // Show goalkeeper if all defenders are defeated
-            println(s"0 for ${defenderField.head.value} of ${defenderField.head.suit} (goalkeeper)")
-          } else {
-            // Show defenders only
-            defenderField.zipWithIndex.foreach { case (card, index) =>
-              if (index > 0) { // Skip the goalkeeper
-                println(s"${index - 1} for ${card.value} of ${card.suit} (defender)")
-              }
-            }
-          }
-
-          val input = scala.io.StdIn.readLine()
-          val attackPositionTry = Try(input.trim.toInt)
-
-          attackPositionTry match {
-            case Success(position) =>
-              val adjustedPosition = if (defenderField.size == 1) 0 else position + 1
-              if ((defenderField.size > 1 && position >= 0 && position <= 2 && defenderField.isDefinedAt(adjustedPosition)) ||
-                (defenderField.size == 1 && position == 0)) {
-                attack(attackerHand, defenderHand, defenderField, adjustedPosition) match {
-                  case Success(result) =>
-                    continueAttacking = result
-                    if (defenderField.isEmpty) {
-                      println(s"Player $currentPlayer wins the round and scores!")
-                    }
-                  case Failure(exception) =>
-                    println(s"Attack failed: ${exception.getMessage}")
-                    continueAttacking = false
-                }
-              } else {
-                println("Invalid position. Try again.")
-              }
-
-            case Failure(exception) =>
-              println(s"Invalid input: ${exception.getMessage}")
-          }
-        }
-
-        // Switch players
-        currentPlayer = if (currentPlayer == 1) 2 else 1
-//----------------------------------------------------
-        // Refill the new defender's field
-        val (_, newDefenderHand, _, newDefenderField) = currentPlayer match {
-          case 1 => (player1Hand, player2Hand, player1Field, player2Field)
-          case 2 => (player2Hand, player1Hand, player2Field, player1Field)
-        }
-        //________________
-        refillField(newDefenderHand, newDefenderField)
-
-        if (player1Hand.isEmpty || player2Hand.isEmpty) {
-          gameOver = true
-          println("Game Over!")
-        }
-      }
-    }
-  }
-
-  private def refillField(playerHand: mutable.Queue[Card], playerField: ListBuffer[Card]): Unit = {
+  def refillField(playerHand: mutable.Queue[Card], playerField: ListBuffer[Card]): Unit = {
     while (playerField.size < 4 && playerHand.nonEmpty) {
       playerField += playerHand.dequeue()
     }
-    // Sort the field to ensure the goalkeeper (index 0) is the strongest card
     val sortedField = playerField.sortBy(card => -card.valueToInt(card.value))
     playerField.clear()
     playerField ++= sortedField
   }
-
+  def playGame(): Unit = {
+    
+  }
 }

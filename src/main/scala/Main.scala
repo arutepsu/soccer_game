@@ -1,11 +1,13 @@
 import model.*
 import aview.gui.*
-import controller.controllerComponent.ControllerBaseImpl.Controller
+import aview.*
+import controller.controllerComponent.ControllerBaseImpl._
 import model.CardComponent.{Card, CardDeck}
 import model.PlayerComponent.Player
 import model.PlayingFieldComponent.PlayingField
 
 import scala.collection.mutable
+import scala.io.StdIn.readLine
 
 object Main {
 
@@ -17,16 +19,34 @@ object Main {
   )
 
   def main(args: Array[String]): Unit = {
-    // Initialize the game with default player names
-    val (player1, player2) = initializeGame()
+    // Initialize the TUI
+    val tui = new Tui(controller)
+    tui.displayWelcomeMessage()
 
-    // Launch the GUI
-    new GameGui(controller).main(args)
+    // Get player names
+    val player1Name = tui.getUser1Name
+    val player2Name = tui.getUser2Name
+
+    // Initialize the game with player names
+    val (player1, player2) = initializeGame(player1Name, player2Name)
+
+    // Main loop for TUI interaction
+    var input: String = ""
+    var currentPlayer = player1Name
+    while (input != "q"){
+      println(s"\n$currentPlayer's turn. Choose an action: (attack: 'a', redo: 'r', undo: 'u', quit: 'q')")
+      input = readLine()
+      tui.processInputLine(input, currentPlayer)
+      currentPlayer = if (currentPlayer == player1Name) player2Name else player1Name
+    } 
+
+    // Display final status
+    tui.displayFinalStatus(player1, player2)
   }
 
-  def initializeGame(): (Player, Player) = {
-    val player1 = Player("Player1", List.empty)
-    val player2 = Player("CPU", List.empty)
+  def initializeGame(player1Name: String, player2Name: String): (Player, Player) = {
+    val player1 = Player(player1Name, List.empty)
+    val player2 = Player(player2Name, List.empty)
 
     // Create and shuffle the deck
     val deck = CardDeck.createStandardDeck()

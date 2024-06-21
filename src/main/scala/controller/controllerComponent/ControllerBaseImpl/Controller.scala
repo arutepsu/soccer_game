@@ -1,9 +1,10 @@
 package controller.controllerComponent.ControllerBaseImpl
 
+
 import controller.controllerComponent.GameEvents.*
 import controller.controllerComponent.GameStatus
 import model.CardComponent.Card
-import model.PlayingFieldComponent.PlayingField
+import model.PlayingFieldComponent.{GameLogic, PlayingField}
 import util.{Command, UndoManager}
 
 import scala.collection.mutable
@@ -11,7 +12,7 @@ import scala.swing.Publisher
 import scala.swing.event.Event
 
 class Controller(var playingField: PlayingField) extends Publisher {
-
+  var gamelogic = new GameLogic(playingField)
   var gameStatus: GameStatus.Value = GameStatus.IDLE
   private val undoManager = new UndoManager
   private var currentPlayer1Name: String = ""
@@ -30,7 +31,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
   }
 
   def playGame(player1Name: String, player2Name: String): Unit = {
-    playingField.playGame()
+    gamelogic.playGame()
     gameStatus = GameStatus.RUNNING
     publish(GamePlayed(player1Name, player2Name))
   }
@@ -61,6 +62,10 @@ class Controller(var playingField: PlayingField) extends Publisher {
     currentPlayer1Name = nickname1
     currentPlayer2Name = nickname2
     publish(NicknamesEntered(nickname1, nickname2))
+  }
+  def quit(): Unit = {
+    gameStatus=GameStatus.ENDED
+    sys.exit(0)
   }
 
   def getCurrentPlayer1Name: String = currentPlayer1Name
