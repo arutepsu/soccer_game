@@ -1,5 +1,4 @@
 import model.*
-import aview.gui.*
 import aview.*
 import controller.controllerComponent.ControllerBaseImpl._
 import model.CardComponent.{Card, CardDeck}
@@ -32,13 +31,9 @@ object Main {
 
     // Main loop for TUI interaction
     var input: String = ""
-    var currentPlayer = player1Name
-    while (input != "q"){
-      println(s"\n$currentPlayer's turn. Choose an action: (attack: 'a', redo: 'r', undo: 'u', quit: 'q')")
-      input = readLine()
-      tui.processInputLine(input, currentPlayer)
-      currentPlayer = if (currentPlayer == player1Name) player2Name else player1Name
-    } 
+    while (!controller.gamelogic.isGameOver) {
+      tui.startAttack()
+    }
 
     // Display final status
     tui.displayFinalStatus(player1, player2)

@@ -1,7 +1,6 @@
 package controller.controllerComponent.ControllerBaseImpl
 
-
-import controller.controllerComponent.GameEvents.*
+import controller.controllerComponent.GameEvents._
 import controller.controllerComponent.GameStatus
 import model.CardComponent.Card
 import model.PlayingFieldComponent.{GameLogic, PlayingField}
@@ -10,12 +9,11 @@ import util.{Command, UndoManager}
 import scala.collection.mutable
 import scala.swing.Publisher
 import scala.swing.event.Event
-import aview.Tui
 
 class Controller(var playingField: PlayingField) extends Publisher {
   var gamelogic = new GameLogic(playingField)
   var gameStatus: GameStatus.Value = GameStatus.IDLE
-  var attackPosition = 0;
+  var attackPosition = 0
   private val undoManager = new UndoManager
   private var currentPlayer1Name: String = ""
   private var currentPlayer2Name: String = ""
@@ -33,7 +31,6 @@ class Controller(var playingField: PlayingField) extends Publisher {
   }
 
   def playGame(player1Name: String, player2Name: String): Unit = {
-    gamelogic.playGame()
     gameStatus = GameStatus.RUNNING
     publish(GamePlayed(player1Name, player2Name))
   }
@@ -56,7 +53,7 @@ class Controller(var playingField: PlayingField) extends Publisher {
 
   def redo(): Unit = {
     undoManager.redoStep
-    gameStatus= GameStatus.REDO
+    gameStatus = GameStatus.REDO
     publish(new FieldUpdated)
   }
 
@@ -65,24 +62,25 @@ class Controller(var playingField: PlayingField) extends Publisher {
     currentPlayer2Name = nickname2
     publish(NicknamesEntered(nickname1, nickname2))
   }
+
   def enterAttackPosition(int: Int): Unit = {
     attackPosition = int
     publish(AttackingPositionEntered(int))
   }
+
   def quit(): Unit = {
-    gameStatus=GameStatus.ENDED
+    gameStatus = GameStatus.ENDED
     sys.exit(0)
   }
 
   def getCurrentPlayer1Name: String = currentPlayer1Name
   def getCurrentPlayer2Name: String = currentPlayer2Name
+  def getCurrentPlayer: String = if (gamelogic.currentPlayer == 1) currentPlayer1Name else currentPlayer2Name
 
   def getStatusText: String = GameStatus.message(gameStatus)
 
   def getPlayer1Hand: mutable.Queue[Card] = player1Hand
-
   def getPlayer2Hand: mutable.Queue[Card] = player2Hand
-
   def getPlayer1Field: mutable.ListBuffer[Card] = playingField.getPlayer1Field
   def getPlayer2Field: mutable.ListBuffer[Card] = playingField.getPlayer2Field
 }
